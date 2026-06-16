@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SENU — Practice</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:    #fdc35f;
+      --gold-33: rgba(253,195,95,0.33);
+      --gold-66: rgba(253,195,95,0.66);
+      --bg:      #fffef9;
+      --bg-2:    #faf7f0;
+      --text:    #1c1a15;
+      --muted:   #6b6560;
+      --border:  #e8e0cc;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --radius:  14px;
+      --tnr:     'Times New Roman', Times, serif;
+      --phi3:    4.236s;
+    }
+
+    body {
+      font-family: var(--tnr);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ══ ЛОГОТИП ══ */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .logo-bars { display: flex; align-items: flex-end; gap: 0; height: 24px; }
+
+    .lb { width: 7px; transform-origin: bottom center; }
+    .lb1 { height: 8px;  background: var(--gold-33); border: 1.5px solid rgba(253,195,95,0.55); animation: bar-rise var(--phi3) ease-in-out infinite 0s; }
+    .lb2 { height: 14px; background: var(--gold-66); border: 1.5px solid rgba(253,195,95,0.82); animation: bar-rise var(--phi3) ease-in-out infinite 0.382s; }
+    .lb3 { height: 24px; background: var(--gold); animation: bar-rise var(--phi3) ease-in-out infinite 0.764s; }
+
+    @keyframes bar-rise {
+      0%   { transform: scaleY(0); opacity: 0; }
+      18%  { transform: scaleY(1); opacity: 1; }
+      62%  { transform: scaleY(1); opacity: 1; }
+      80%  { transform: scaleY(0); opacity: 0; }
+      100% { transform: scaleY(0); opacity: 0; }
+    }
+
+    .logo-name {
+      font-family: var(--tnr);
+      font-size: 1.3rem;
+      font-weight: 700;
+      font-style: italic;
+    }
+
+    /* ══ NAV ══ */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,254,249,0.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-score { font-family: var(--tnr); font-size: 0.9rem; color: var(--muted); }
+
+    /* ══ SCREENS ══ */
+    .screen { display: none; }
+    .screen.active { display: flex; }
+
+    /* ══ START ══ */
+    #start-screen {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 60px);
+      padding: 48px 24px;
+    }
+
+    .start-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 52px 48px;
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+    }
+
+    .start-tag {
+      display: inline-block;
+      font-family: var(--tnr);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #9a6c10;
+      background: rgba(253,195,95,0.16);
+      border: 1px solid rgba(253,195,95,0.38);
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 22px;
+    }
+
+    .start-card h1 {
+      font-family: var(--tnr);
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .start-card p {
+      font-family: var(--tnr);
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.68;
+      margin-bottom: 32px;
+    }
+
+    .start-meta {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin-bottom: 32px;
+    }
+
+    .meta-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+
+    .meta-val {
+      font-family: var(--tnr);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .meta-lbl {
+      font-family: var(--tnr);
+      font-size: 0.7rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .name-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--tnr);
+      font-size: 0.95rem;
+      text-align: center;
+      margin-bottom: 16px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .name-input:focus { border-color: var(--gold); }
+    .name-input::placeholder { color: var(--muted); }
+
+    .section-select { display: flex; gap: 10px; margin-bottom: 28px; }
+
+    .sect-btn {
+      flex: 1;
+      padding: 10px;
+      background: var(--bg-2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: var(--tnr);
+      font-size: 0.9rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .sect-btn.active {
+      border-color: var(--gold);
+      background: rgba(253,195,95,0.12);
+      color: #8a5c08;
+    }
+
+    .btn-start {
+      width: 100%;
+      padding: 14px;
+      background: var(--gold);
+      color: var(--text);
+      font-family: var(--tnr);
+      font-size: 1rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(253,195,95,0.5); }
+
+    /* ══ QUIZ ══ */
+    #quiz-screen { flex-direction: column; min-height: calc(100vh - 60px); }
+
+    .progress-bar-wrap { height: 3px; background: var(--border); }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--gold);
+      transition: width .4s ease;
+    }
+
+    .quiz-inner {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 24px 80px;
+    }
+
+    .quiz-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 680px;
+      overflow: hidden;
+    }
+
+    .quiz-card-head {
+      padding: 22px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .q-pill {
+      display: inline-block;
+      font-family: var(--tnr);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9a6c10;
+      background: rgba(253,195,95,0.16);
+      border: 1px solid rgba(253,195,95,0.38);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .q-count { font-family: var(--tnr); font-size: 0.9rem; color: var(--muted); }
+
+    .quiz-card-body { padding: 32px 28px 24px; }
+
+    .topic-badge {
+      display: inline-block;
+      font-family: var(--tnr);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 18px;
+    }
+
+    .question-text {
+      font-family: var(--tnr);
+      font-size: 1rem;
+      line-height: 1.78;
+      color: var(--text);
+      margin-bottom: 28px;
+      white-space: pre-line;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 10px; }
+
+    .opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--bg-2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--tnr);
+      transition: border-color .15s, background .15s;
+      width: 100%;
+    }
+    .opt:hover:not(.disabled) { border-color: var(--gold); background: rgba(253,195,95,0.07); }
+    .opt.selected { border-color: var(--gold); background: rgba(253,195,95,0.1); }
+    .opt.correct  { border-color: var(--green); background: rgba(34,197,94,0.07); }
+    .opt.wrong    { border-color: var(--red);   background: rgba(239,68,68,0.07); }
+    .opt.disabled { cursor: default; }
+
+    .opt-letter {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--tnr);
+      font-size: 0.8rem;
+      font-style: italic;
+      color: var(--muted);
+      transition: all .15s;
+    }
+    .opt.selected .opt-letter { border-color: var(--gold); background: var(--gold); color: var(--text); }
+    .opt.correct  .opt-letter { border-color: var(--green); background: var(--green); color: white; }
+    .opt.wrong    .opt-letter { border-color: var(--red);   background: var(--red);   color: white; }
+
+    .opt-text {
+      font-family: var(--tnr);
+      font-size: 0.95rem;
+      line-height: 1.58;
+      color: var(--text);
+      padding-top: 2px;
+    }
+
+    .feedback {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      font-family: var(--tnr);
+      font-size: 0.92rem;
+      line-height: 1.58;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.fb-correct { background: rgba(34,197,94,0.08);  color: #166534; border: 1px solid rgba(34,197,94,0.2); }
+    .feedback.fb-wrong   { background: rgba(239,68,68,0.08);  color: #991b1b; border: 1px solid rgba(239,68,68,0.2); }
+
+    .quiz-card-foot {
+      padding: 18px 28px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 11px 24px;
+      background: var(--gold);
+      color: var(--text);
+      font-family: var(--tnr);
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-next:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(253,195,95,0.45); }
+
+    /* ══ RESULT ══ */
+    #result-screen {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 60px);
+      padding: 48px 24px;
+    }
+
+    .result-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 540px;
+      text-align: center;
+    }
+
+    /* три столба результата */
+    .result-pillars {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 0;           /* вплотную */
+      height: 90px;
+      margin-bottom: 28px;
+    }
+
+    .res-pillar {
+      width: 28px;
+      border-radius: 5px 5px 2px 2px;
+      transition: height .9s cubic-bezier(.22,1,.36,1);
+    }
+    .rp1 { background: var(--gold-33); border: 1.5px solid rgba(253,195,95,0.55); height: 5%; }
+    .rp2 { background: var(--gold-66); border: 1.5px solid rgba(253,195,95,0.82); height: 5%; }
+    .rp3 { background: var(--gold); height: 5%; }
+
+    .result-score {
+      font-family: var(--tnr);
+      font-size: 3.2rem;
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .result-of {
+      font-family: var(--tnr);
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .result-title {
+      font-family: var(--tnr);
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .result-msg {
+      font-family: var(--tnr);
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+
+    .breakdown {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+
+    .bd-title {
+      font-family: var(--tnr);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .bd-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--tnr);
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .bd-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .bd-dot.c { background: var(--green); }
+    .bd-dot.w { background: var(--red); }
+
+    .result-actions { display: flex; gap: 10px; }
+
+    .btn-retry {
+      flex: 1;
+      padding: 13px;
+      background: var(--gold);
+      color: var(--text);
+      font-family: var(--tnr);
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-retry:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(253,195,95,0.45); }
+
+    .btn-home {
+      flex: 1;
+      padding: 13px;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--tnr);
+      font-size: 0.95rem;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-home:hover { border-color: var(--gold); color: var(--text); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 18px; }
+      .start-card { padding: 36px 24px; }
+      .quiz-card-body { padding: 24px 18px 18px; }
+      .quiz-card-head, .quiz-card-foot { padding: 16px 18px; }
+      .result-card { padding: 36px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-bars">
+      <div class="lb lb1"></div>
+      <div class="lb lb2"></div>
+      <div class="lb lb3"></div>
+    </div>
+    <span class="logo-name">senu</span>
+  </a>
+  <span class="nav-score" id="nav-score"></span>
+</nav>
+
+<!-- START -->
+<div class="screen active" id="start-screen">
+  <div class="start-card">
+    <div class="start-tag">NUET · Adaptive Practice</div>
+    <h1>Ready to practice?</h1>
+    <p>Choose a section, enter your name, and start. Questions adapt to your level as you go.</p>
+
+    <div class="start-meta">
+      <div class="meta-item"><span class="meta-val">5</span><span class="meta-lbl">Questions</span></div>
+      <div class="meta-item"><span class="meta-val">~8</span><span class="meta-lbl">Minutes</span></div>
+      <div class="meta-item"><span class="meta-val">AI</span><span class="meta-lbl">Adaptive</span></div>
+    </div>
+
+    <div class="section-select">
+      <button class="sect-btn active" id="btn-ct" onclick="selectSection('CT')">Critical Thinking</button>
+      <button class="sect-btn"        id="btn-ma" onclick="selectSection('MA')">Mathematics</button>
+    </div>
+
+    <input class="name-input" id="user-name" type="text" placeholder="Your name (optional)" />
+    <button class="btn-start" onclick="startQuiz()">Start Practice →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="quiz-screen">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="prog-fill" style="width:0%"></div>
+  </div>
+  <div class="quiz-inner">
+    <div class="quiz-card">
+      <div class="quiz-card-head">
+        <span class="q-pill" id="q-section-pill">CT</span>
+        <span class="q-count" id="q-count">1 / 5</span>
+      </div>
+      <div class="quiz-card-body">
+        <div class="topic-badge" id="topic-badge">Topic</div>
+        <div class="question-text" id="q-text"></div>
+        <div class="options" id="options"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+      <div class="quiz-card-foot">
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()" style="display:none">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="result-screen">
+  <div class="result-card">
+    <div class="result-pillars">
+      <div class="res-pillar rp1" id="rp1"></div>
+      <div class="res-pillar rp2" id="rp2"></div>
+      <div class="res-pillar rp3" id="rp3"></div>
+    </div>
+    <div class="result-score" id="res-score">0/5</div>
+    <div class="result-of" id="res-of">out of 5</div>
+    <div class="result-title" id="res-title">Result</div>
+    <p class="result-msg" id="res-msg"></p>
+    <div class="breakdown" id="breakdown"><div class="bd-title">Question Breakdown</div></div>
+    <div class="result-actions">
+      <button class="btn-retry" onclick="retryQuiz()">Try Again</button>
+      <a href="index.html" class="btn-home">← Home</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const CT_QUESTIONS = [
+  {
+    topic: "Identifying Conclusions",
+    text: "Sometimes poverty is defined in relation to average income. For example, people may be said to be poor if their income is less than 60 per cent of the average income for the population. This is not a legitimate definition, because it is a measure of inequality rather than poverty. This is obvious if we consider the consequences of using the definition. It means that a huge pay rise for middle managers automatically throws some people into poverty, even though their income has not changed. On the other hand, the definition implies that in a society where almost everyone is starving, no one is poor.\n\nWhich of the following best expresses the main conclusion of the above argument?",
+    options: ["Having a relatively low income is not the same as being poor.","It is impossible to find an appropriate definition of poverty.","It is wrong to define poverty in relation to average income.","A huge pay rise for middle managers makes other people poor.","There is no inequality in a society where most people are starving."],
+    answer: 2,
+    explanation: "The passage argues specifically against defining poverty using average income — that is the main conclusion, not the broader claim that all definitions fail."
+  },
+  {
+    topic: "Identifying Flaws",
+    text: "Over the past ten years, there has been a four-fold increase in the number of people killed in road accidents who are found to have illegal drugs in their bodies. The rate of increase is much greater than the corresponding rate for those people killed in accidents who were found with alcohol in their blood. This shows that the campaign against drink-driving has succeeded. Consequently, the Government ought now to concentrate on targeting those people who drive whilst under the influence of illegal drugs.\n\nWhich of the following is the best statement of the flaw in the argument above?",
+    options: ["Those who take illegal drugs and drive are likely different from those who drink and drive.","Targeting drug drivers ignores people who take drugs but do not drive.","The success of the drink-driving campaign does not mean a drug campaign would succeed.","The increase in drug-related road deaths is insufficient to conclude the drink-driving campaign succeeded.","Evidence needs to distinguish between illegal and legal drugs."],
+    answer: 3,
+    explanation: "The flaw is that the argument uses the rise in drug deaths as evidence the drink-driving campaign worked — these are separate trends and one does not prove the other."
+  },
+  {
+    topic: "Drawing Conclusions",
+    text: "Socialist politicians are often taunted by their opponents for leading lifestyles similar to those of their capitalist counterparts. The theme runs: 'You object on socialist principles to gross inequalities in the distribution of wealth; yet you enjoy a higher personal standard of living than the majority. Therefore you are not really a socialist.' But the jibe can easily be answered, for there is no hypocrisy in arguing, even from a privileged position, for a fairer and more equal society.\n\nWhich of the following is a conclusion which can be reliably drawn from the passage as a whole?",
+    options: ["Socialists who enjoy personal wealth cannot object to others who amass even greater wealth.","Someone can be a genuine socialist whilst enjoying a high standard of living.","Calls for reform are more effective if they come from the more privileged classes.","There is nothing immoral about inequalities in the distribution of wealth.","It is hypocritical to claim to be a socialist if one enjoys an above-average standard of living."],
+    answer: 1,
+    explanation: "The passage directly refutes the idea that personal wealth disqualifies someone from being a socialist — so B follows reliably from the argument."
+  },
+  {
+    topic: "Identifying Assumptions",
+    text: "The Executive of the Students' Union recently carried out a survey to identify dangerous areas on campus. This led to improved lighting in suspect areas. Such reforms can only help reduce the number of attacks on campus. However, the University lake was not included in the survey as it belongs to the City Council. This means the University has no direct influence over safety standards there. It should therefore definitely be avoided by lone students at night.\n\nWhich one of the following is an underlying assumption of this argument?",
+    options: ["Students do not look after their own safety but rely on others to take measures on their behalf.","The City Council regards the lake area as part of the campus.","Students walking on and off campus at night would go via the university lake.","The safety measures taken by the City Council are either non-existent or inferior to those implemented by the Student Union.","The Student Union is not merely seeking popularity but is genuinely concerned about safety risks."],
+    answer: 3,
+    explanation: "The argument assumes the lake is less safe because the University can't control it — this only holds if we assume Council safety measures are absent or inferior."
+  },
+  {
+    topic: "Evaluating Evidence",
+    text: "A study found that students who listen to classical music while studying score higher on tests than those who study in silence. Therefore, schools should play classical music in classrooms during study periods to improve academic performance.\n\nWhich of the following, if true, most weakens this argument?",
+    options: ["Many students find classical music distracting rather than helpful.","The students who chose to listen to classical music were already high achievers who sought out additional resources.","Classical music is expensive to licence for school use.","Some students prefer other genres of music.","Test scores are not the only measure of academic performance."],
+    answer: 1,
+    explanation: "If the students who listened to classical music were already high achievers, the music may not have caused the higher scores — the correlation is explained by a confounding variable."
+  }
+];
+
+const MA_QUESTIONS = [
+  {
+    topic: "Problem Solving",
+    text: "A child's bus fare is cheaper than the adult fare but is more than half the adult fare. The total cost of a single journey for an adult and two children is £1.20. Adult fares are all multiples of 10p.\n\nWhat is the adult fare?",
+    options: ["30p","40p","50p","60p","70p"],
+    answer: 2,
+    explanation: "If adult = 50p, child must be between 25p and 50p. Try child = 35p: 50 + 35 + 35 = 120p = £1.20 ✓. No other adult fare satisfies all conditions."
+  },
+  {
+    topic: "Numerical Reasoning",
+    text: "A train travels from City A to City B at 80 km/h and returns at 120 km/h. What is the average speed for the entire round trip?",
+    options: ["100 km/h","96 km/h","95 km/h","98 km/h","90 km/h"],
+    answer: 1,
+    explanation: "For equal distances use harmonic mean: 2 × (80 × 120) / (80 + 120) = 19200 / 200 = 96 km/h."
+  },
+  {
+    topic: "Spatial Reasoning",
+    text: "A cube has a total surface area of 54 cm². What is the volume of the cube?",
+    options: ["9 cm³","27 cm³","18 cm³","36 cm³","54 cm³"],
+    answer: 1,
+    explanation: "Surface area = 6s² = 54, so s² = 9, s = 3 cm. Volume = s³ = 27 cm³."
+  },
+  {
+    topic: "Data Interpretation",
+    text: "In a class of 30 students, 18 play football, 12 play basketball, and 6 play both sports. How many students play neither sport?",
+    options: ["6","8","4","10","12"],
+    answer: 0,
+    explanation: "By inclusion-exclusion: 18 + 12 − 6 = 24 play at least one sport. 30 − 24 = 6 play neither."
+  },
+  {
+    topic: "Algebra",
+    text: "If 3x + 7 = 22, what is the value of 2x − 1?",
+    options: ["7","9","5","10","8"],
+    answer: 1,
+    explanation: "3x = 15, so x = 5. Then 2x − 1 = 10 − 1 = 9."
+  }
+];
+
+let questions = [], current = 0, score = 0, answered = false, results = [];
+let userName = '', section = 'CT';
+
+function selectSection(s) {
+  section = s;
+  document.getElementById('btn-ct').classList.toggle('active', s === 'CT');
+  document.getElementById('btn-ma').classList.toggle('active', s === 'MA');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function startQuiz() {
+  userName = document.getElementById('user-name').value.trim() || 'Student';
+  questions = section === 'CT' ? [...CT_QUESTIONS] : [...MA_QUESTIONS];
+  current = 0; score = 0; answered = false; results = [];
+  document.getElementById('q-section-pill').textContent = section === 'CT' ? 'Critical Thinking' : 'Mathematics';
+  document.getElementById('nav-score').textContent = '';
+  showScreen('quiz-screen');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  answered = false;
+  const total = questions.length;
+
+  document.getElementById('prog-fill').style.width = `${(current / total) * 100}%`;
+  document.getElementById('q-count').textContent = `${current + 1} / ${total}`;
+  document.getElementById('topic-badge').textContent = q.topic;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('btn-next').style.display = 'none';
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  const letters = ['A','B','C','D','E'];
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span class="opt-text">${opt}</span>`;
+    btn.addEventListener('click', () => selectOpt(i));
+    opts.appendChild(btn);
+  });
+}
+
+function selectOpt(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const opts = document.querySelectorAll('.opt');
+  const fb = document.getElementById('feedback');
+
+  opts.forEach(o => o.classList.add('disabled'));
+  opts[idx].classList.add('selected');
+
+  if (idx === q.answer) {
+    score++;
+    opts[idx].classList.add('correct');
+    fb.className = 'feedback fb-correct show';
+    fb.textContent = '✓ Correct. ' + q.explanation;
+    results.push({ correct: true });
+  } else {
+    opts[idx].classList.add('wrong');
+    opts[q.answer].classList.add('correct');
+    fb.className = 'feedback fb-wrong show';
+    fb.textContent = '✗ Incorrect. ' + q.explanation;
+    results.push({ correct: false });
+  }
+
+  const nb = document.getElementById('btn-next');
+  nb.style.display = 'inline-flex';
+  nb.textContent = current === questions.length - 1 ? 'See Results →' : 'Next →';
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) showResults();
+  else renderQuestion();
+}
+
+async function showResults() {
+  document.getElementById('prog-fill').style.width = '100%';
+  const total = questions.length;
+  const pct   = score / total;
+
+  try {
+    await fetch('http://localhost:8000/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: userName, score, total, section })
+    });
+  } catch(e) {}
+
+  showScreen('result-screen');
+
+  /* Три столба в пропорции 1 : φ : φ² от результата */
+  setTimeout(() => {
+    document.getElementById('rp1').style.height = Math.max(6, Math.round(pct * 33)) + '%';
+    document.getElementById('rp2').style.height = Math.max(6, Math.round(pct * 66)) + '%';
+    document.getElementById('rp3').style.height = Math.max(6, Math.round(pct * 99)) + '%';
+  }, 120);
+
+  document.getElementById('res-score').textContent = `${score}/${total}`;
+  document.getElementById('res-of').textContent    = `out of ${total} · ${Math.round(pct * 100)}%`;
+  document.getElementById('nav-score').textContent = `${score}/${total}`;
+
+  let title, msg;
+  if      (pct === 1)   { title = 'Perfect score!';   msg = 'Outstanding. You have mastered this section.'; }
+  else if (pct >= 0.8)  { title = 'Strong result';    msg = 'You\'re close to top performance. Review any missed questions carefully.'; }
+  else if (pct >= 0.6)  { title = 'Good progress';    msg = 'Solid foundation. Focus on the topics where you slipped.'; }
+  else if (pct >= 0.4)  { title = 'Keep practising';  msg = 'NUET takes practice. Read the explanations and try again.'; }
+  else                  { title = 'More work needed'; msg = 'Don\'t worry — study the explanations and revisit the section.'; }
+
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-msg').textContent   = msg;
+
+  const bd = document.getElementById('breakdown');
+  bd.innerHTML = '<div class="bd-title">Question Breakdown</div>';
+  results.forEach((r, i) => {
+    const row = document.createElement('div');
+    row.className = 'bd-row';
+    row.innerHTML = `<span class="bd-dot ${r.correct ? 'c' : 'w'}"></span><span>Question ${i+1} — ${r.correct ? 'Correct' : 'Incorrect'}</span>`;
+    bd.appendChild(row);
+  });
+}
+
+function retryQuiz() { startQuiz(); }
+</script>
+</body>
+</html>

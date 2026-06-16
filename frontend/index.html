@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SENU — Adaptive NUET Exam Prep</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:    #fdc35f;
+      --gold-33: rgba(253,195,95,0.33);
+      --gold-66: rgba(253,195,95,0.66);
+      --bg:      #fffef9;
+      --bg-2:    #faf7f0;
+      --text:    #1c1a15;
+      --muted:   #6b6560;
+      --border:  #e8e0cc;
+      --radius:  16px;
+      --shadow:  0 4px 28px rgba(0,0,0,0.07);
+      --tnr:     'Times New Roman', Times, serif;
+      --phi3:    4.236s;  /* φ³ — длительность цикла анимации */
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--tnr);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    /* ══════════════════════════════════════
+       ЛОГОТИП — три столба вплотную + анимация
+    ══════════════════════════════════════ */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .logo-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 0;            /* вплотную — без зазоров */
+      height: 28px;
+    }
+
+    .lb {
+      width: 8px;
+      transform-origin: bottom center;
+    }
+
+    /* Высоты в пропорции φ: 1 : φ : φ² ≈ 1 : 1.618 : 2.618 */
+    .lb1 { height: 10px; background: var(--gold-33); border: 1.5px solid rgba(253,195,95,0.55); }
+    .lb2 { height: 17px; background: var(--gold-66); border: 1.5px solid rgba(253,195,95,0.82); }
+    .lb3 { height: 28px; background: var(--gold); }
+
+    /* Анимация: появление → стоп → исчезновение
+       Задержки между столбами = 1/φ² ≈ 0.382s */
+    .lb1 { animation: bar-rise var(--phi3) ease-in-out infinite 0s; }
+    .lb2 { animation: bar-rise var(--phi3) ease-in-out infinite 0.382s; }
+    .lb3 { animation: bar-rise var(--phi3) ease-in-out infinite 0.764s; }
+
+    @keyframes bar-rise {
+      0%   { transform: scaleY(0); opacity: 0; }
+      18%  { transform: scaleY(1); opacity: 1; }
+      62%  { transform: scaleY(1); opacity: 1; }
+      80%  { transform: scaleY(0); opacity: 0; }
+      100% { transform: scaleY(0); opacity: 0; }
+    }
+
+    .logo-name {
+      font-family: var(--tnr);
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-style: italic;       /* Times New Roman italic — как в логотипе */
+      letter-spacing: 0.01em;
+      color: var(--text);
+    }
+
+    /* ══════════════════════════════════════
+       NAV
+    ══════════════════════════════════════ */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,254,249,0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 64px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--tnr);
+      font-size: 0.95rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+
+    .btn-ghost {
+      font-family: var(--tnr);
+      font-size: 0.95rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .btn-ghost:hover { color: var(--text); }
+
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 22px;
+      background: var(--gold);
+      color: var(--text);
+      font-family: var(--tnr);
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-gold:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(253,195,95,0.45);
+    }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 96px 64px;
+      min-height: calc(100vh - 68px);
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-family: var(--tnr);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #9a6c10;
+      background: rgba(253,195,95,0.16);
+      border: 1px solid rgba(253,195,95,0.38);
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: var(--tnr);
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: #9a6c10;
+    }
+
+    .hero-desc {
+      font-family: var(--tnr);
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 440px;
+      margin-bottom: 40px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-gold-lg {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 30px;
+      background: var(--gold);
+      color: var(--text);
+      font-family: var(--tnr);
+      font-size: 1rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-gold-lg:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(253,195,95,0.5);
+    }
+
+    .btn-border-lg {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--tnr);
+      font-size: 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-border-lg:hover { border-color: var(--gold); color: var(--text); }
+
+    /* ══════════════════════════════════════
+       HERO VISUAL — три столба + золотая спираль
+    ══════════════════════════════════════ */
+    .hero-visual { display: flex; flex-direction: column; gap: 20px; }
+
+    .pillars-box {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px 24px 20px;
+      display: flex;
+      align-items: flex-end;
+      gap: 14px;
+      height: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Золотая спираль SVG — нижний правый угол */
+    .spiral-wrap {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      pointer-events: none;
+    }
+
+    .pillar-col {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .pillar-fill {
+      width: 100%;
+      border-radius: 10px 10px 3px 3px;
+      position: relative;
+    }
+
+    .pf1 { height: 33%; background: var(--gold-33); border: 1.5px solid rgba(253,195,95,0.55); }
+    .pf2 { height: 66%; background: var(--gold-66); border: 1.5px solid rgba(253,195,95,0.82); }
+    .pf3 { height: 99%; background: var(--gold); }
+
+    .p-pct {
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--tnr);
+      font-size: 0.82rem;
+      font-style: italic;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .p-label {
+      font-family: var(--tnr);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-n {
+      font-family: var(--tnr);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .stat-l {
+      font-family: var(--tnr);
+      font-size: 0.7rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ══════════════════════════════════════
+       FEATURES
+    ══════════════════════════════════════ */
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 64px;
+    }
+
+    .sec-tag {
+      display: block;
+      font-family: var(--tnr);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #9a6c10;
+      margin-bottom: 12px;
+    }
+
+    .sec-h2 {
+      font-family: var(--tnr);
+      font-size: clamp(1.9rem, 3vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    .sec-sub {
+      font-family: var(--tnr);
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 500px;
+      line-height: 1.72;
+      margin-bottom: 48px;
+    }
+
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feat-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 26px;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .feat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+
+    .feat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 22px;
+    }
+    .fi1 { background: var(--gold-33); }
+    .fi2 { background: var(--gold-66); }
+    .fi3 { background: var(--gold); }
+
+    .feat-card h3 {
+      font-family: var(--tnr);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feat-card p {
+      font-family: var(--tnr);
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.68;
+    }
+
+    /* ══════════════════════════════════════
+       HOW IT WORKS
+    ══════════════════════════════════════ */
+    .how-bg {
+      background: var(--bg-2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 27px;
+      left: calc(16.66% + 16px);
+      right: calc(16.66% + 16px);
+      height: 1px;
+      background: var(--border);
+    }
+
+    .step { text-align: center; }
+
+    .step-circle {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--tnr);
+      font-size: 1.2rem;
+      font-weight: 700;
+      font-style: italic;
+      margin: 0 auto 20px;
+      border: 2px solid var(--gold);
+      position: relative;
+      z-index: 1;
+    }
+    .sc1 { background: var(--gold-33); color: #9a6c10; }
+    .sc2 { background: var(--gold-66); color: #7a5010; }
+    .sc3 { background: var(--gold);    color: var(--text); }
+
+    .step h3 { font-family: var(--tnr); font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+    .step p   { font-family: var(--tnr); font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
+
+    /* ══════════════════════════════════════
+       CTA
+    ══════════════════════════════════════ */
+    .cta-section { text-align: center; padding: 96px 40px; }
+
+    .cta-section h2 {
+      font-family: var(--tnr);
+      font-size: clamp(1.9rem, 3vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .cta-section p {
+      font-family: var(--tnr);
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 480px;
+      margin: 0 auto 36px;
+      line-height: 1.72;
+    }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .foot-copy { font-family: var(--tnr); font-size: 0.85rem; color: var(--muted); }
+    .foot-links { display: flex; gap: 24px; }
+    .foot-links a { font-family: var(--tnr); font-size: 0.85rem; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .foot-links a:hover { color: var(--text); }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (max-width: 960px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 56px 24px; gap: 48px; text-align: center; min-height: auto; }
+      .hero-desc { margin: 0 auto 36px; }
+      .hero-actions { justify-content: center; }
+      .wrap { padding: 56px 24px; }
+      .feat-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .steps::before { display: none; }
+      footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════ NAV ═══════ -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-bars">
+      <div class="lb lb1"></div>
+      <div class="lb lb2"></div>
+      <div class="lb lb3"></div>
+    </div>
+    <span class="logo-name">senu</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="quiz.html">Practice</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <a href="#" class="btn-ghost">Log in</a>
+    <a href="quiz.html" class="btn-gold">Start Free →</a>
+  </div>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">NUET · Adaptive Exam Prep</div>
+    <h1>Prepare <em>Smarter.</em><br>Score Higher.</h1>
+    <p class="hero-desc">The adaptive platform built for NUET. Critical Thinking &amp; Mathematics questions that adjust to your level — helping you improve exactly where it counts.</p>
+    <div class="hero-actions">
+      <a href="quiz.html" class="btn-gold-lg">Start Free Practice →</a>
+      <a href="#how" class="btn-border-lg">How it works</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="pillars-box">
+      <!-- Три столба -->
+      <div class="pillar-col">
+        <div class="pillar-fill pf1"><span class="p-pct">33%</span></div>
+        <span class="p-label">Learn</span>
+      </div>
+      <div class="pillar-col">
+        <div class="pillar-fill pf2"><span class="p-pct">66%</span></div>
+        <span class="p-label">Practice</span>
+      </div>
+      <div class="pillar-col">
+        <div class="pillar-fill pf3"><span class="p-pct">99%</span></div>
+        <span class="p-label">Master</span>
+      </div>
+
+      <!-- Золотая спираль (SVG генерируется JS) -->
+      <div class="spiral-wrap">
+        <svg id="spiral-svg" width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+          <!-- Окружность золотого сечения (синяя, как в логотипе) -->
+          <circle cx="45" cy="45" r="40"
+                  fill="none"
+                  stroke="rgba(60,80,240,0.22)"
+                  stroke-width="1"
+                  stroke-dasharray="4 6"/>
+          <!-- Спираль (путь задаётся JS) -->
+          <path id="spiral-path"
+                fill="none"
+                stroke="#fdc35f"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                opacity="0.75"/>
+          <!-- Центральная точка -->
+          <circle cx="45" cy="45" r="2.2" fill="rgba(30,20,10,0.45)"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-card">
+        <div class="stat-n">500+</div>
+        <div class="stat-l">Questions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-n">CT &amp; MA</div>
+        <div class="stat-l">Sections</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-n">IRT</div>
+        <div class="stat-l">Algorithm</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FEATURES ═══════ -->
+<section class="wrap" id="features">
+  <span class="sec-tag">What you get</span>
+  <h2 class="sec-h2">Everything you need<br>to ace NUET</h2>
+  <p class="sec-sub">Built specifically for Nazarbayev University Entrance Test — no generic content, pure NUET focus.</p>
+
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon fi1">🧠</div>
+      <h3>Adaptive Testing</h3>
+      <p>Our IRT algorithm adjusts question difficulty in real time based on your answers — like a personal tutor, always available.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon fi2">📊</div>
+      <h3>Progress Dashboard</h3>
+      <p>Track every session. See weak topics, score trends, and exactly how close you are to the NUET pass mark.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon fi3">📚</div>
+      <h3>Question Bank</h3>
+      <p>Hundreds of NUET-style Critical Thinking and Mathematics questions — every one with a detailed explanation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ HOW IT WORKS ═══════ -->
+<div class="how-bg">
+  <div class="wrap" id="how">
+    <span class="sec-tag">The process</span>
+    <h2 class="sec-h2">Three steps to<br>a higher score</h2>
+    <p class="sec-sub">Simple, effective, and built around how you actually learn.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-circle sc1">1</div>
+        <h3>Take a Diagnostic</h3>
+        <p>Answer a short set of questions. SENU maps your current level across all NUET skills instantly.</p>
+      </div>
+      <div class="step">
+        <div class="step-circle sc2">2</div>
+        <h3>Practice Adaptively</h3>
+        <p>The system serves questions at exactly your level — not too easy, not impossible. Just right.</p>
+      </div>
+      <div class="step">
+        <div class="step-circle sc3">3</div>
+        <h3>Track &amp; Improve</h3>
+        <p>Review your dashboard. See which argument types or math topics need more attention.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ CTA ═══════ -->
+<section class="cta-section">
+  <h2>Ready to prepare<br>for NUET?</h2>
+  <p>Join students using SENU to prepare smarter. Free to start — no account needed.</p>
+  <a href="quiz.html" class="btn-gold-lg">Begin Practice Session →</a>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+  <span class="foot-copy">© 2026 SENU · Adaptive NUET Prep · Built by Amir</span>
+  <div class="foot-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════
+   ЗОЛОТАЯ СПИРАЛЬ — генерация пути + анимация
+   φ = 1.6180339887...
+   Уравнение: r = a · e^(b·θ),  b = ln(φ)/(π/2)
+══════════════════════════════════════════════ */
+(function () {
+  const PHI  = 1.6180339887;
+  const b    = Math.log(PHI) / (Math.PI / 2);
+  const CX   = 45, CY = 45;
+  const A    = 2.8;       // начальный радиус (внутри)
+  const TURNS = 2;        // два оборота
+  const STEPS = 300;
+  const CYCLE = 4236;     // φ³ ≈ 4.236 секунды
+
+  /* --- генерация SVG-пути --- */
+  function buildPath () {
+    let d = '';
+    for (let i = 0; i <= STEPS; i++) {
+      const theta = (i / STEPS) * TURNS * 2 * Math.PI;
+      const r = A * Math.exp(b * theta);
+      const x = CX + r * Math.cos(theta);
+      const y = CY - r * Math.sin(theta); /* флип Y для SVG */
+      d += (i === 0 ? 'M ' : ' L ') + x.toFixed(2) + ',' + y.toFixed(2);
+    }
+    return d;
+  }
+
+  const pathEl = document.getElementById('spiral-path');
+  pathEl.setAttribute('d', buildPath());
+
+  const LEN = pathEl.getTotalLength();
+  pathEl.style.strokeDasharray  = LEN;
+  pathEl.style.strokeDashoffset = LEN;
+
+  /* --- анимация: рисуется → держится → стирается → пауза → снова ---
+     Тайминг в пропорциях φ:
+       рисование  = CYCLE × 0.20  ≈  φ/φ² секунды
+       удержание  = CYCLE × 0.44
+       стирание   = CYCLE × 0.20
+       пауза      = CYCLE × 0.16
+  */
+  let start = null;
+
+  function easeInOut(t) {
+    return t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+  }
+
+  function tick (ts) {
+    if (!start) start = ts;
+    const elapsed = (ts - start) % CYCLE;
+    const t = elapsed / CYCLE;          // 0…1 в рамках цикла
+
+    let offset, opacity;
+
+    if (t < 0.20) {
+      // рисование: offset от LEN до 0
+      const p = easeInOut(t / 0.20);
+      offset  = LEN * (1 - p);
+      opacity = p;
+    } else if (t < 0.64) {
+      // удержание
+      offset  = 0;
+      opacity = 1;
+    } else if (t < 0.84) {
+      // стирание: offset от 0 до LEN
+      const p = easeInOut((t - 0.64) / 0.20);
+      offset  = LEN * p;
+      opacity = 1 - p;
+    } else {
+      // пауза
+      offset  = LEN;
+      opacity = 0;
+    }
+
+    pathEl.style.strokeDashoffset = offset;
+    pathEl.style.opacity          = opacity;
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+})();
+</script>
+
+</body>
+</html>
