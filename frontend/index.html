@@ -19,7 +19,7 @@
       --radius:  16px;
       --shadow:  0 4px 28px rgba(0,0,0,0.07);
       --tnr:     'Times New Roman', Times, serif;
-      --phi3:    4.236s;  /* φ³ — длительность цикла анимации */
+      --phi3:    4.236s;
     }
 
     html { scroll-behavior: smooth; }
@@ -32,9 +32,7 @@
       font-size: 16px;
     }
 
-    /* ══════════════════════════════════════
-       ЛОГОТИП — три столба вплотную + анимация
-    ══════════════════════════════════════ */
+    /* ══ ЛОГОТИП ══ */
     .logo {
       display: flex;
       align-items: center;
@@ -46,25 +44,14 @@
     .logo-bars {
       display: flex;
       align-items: flex-end;
-      gap: 0;            /* вплотную — без зазоров */
+      gap: 0;
       height: 28px;
     }
 
-    .lb {
-      width: 8px;
-      transform-origin: bottom center;
-    }
-
-    /* Высоты в пропорции φ: 1 : φ : φ² ≈ 1 : 1.618 : 2.618 */
-    .lb1 { height: 10px; background: var(--gold-33); border: 1.5px solid rgba(253,195,95,0.55); }
-    .lb2 { height: 17px; background: var(--gold-66); border: 1.5px solid rgba(253,195,95,0.82); }
-    .lb3 { height: 28px; background: var(--gold); }
-
-    /* Анимация: появление → стоп → исчезновение
-       Задержки между столбами = 1/φ² ≈ 0.382s */
-    .lb1 { animation: bar-rise var(--phi3) ease-in-out infinite 0s; }
-    .lb2 { animation: bar-rise var(--phi3) ease-in-out infinite 0.382s; }
-    .lb3 { animation: bar-rise var(--phi3) ease-in-out infinite 0.764s; }
+    .lb { width: 8px; transform-origin: bottom center; }
+    .lb1 { height: 10px; background: var(--gold-33); border: 1.5px solid rgba(253,195,95,0.55); animation: bar-rise var(--phi3) ease-in-out infinite 0s; }
+    .lb2 { height: 17px; background: var(--gold-66); border: 1.5px solid rgba(253,195,95,0.82); animation: bar-rise var(--phi3) ease-in-out infinite 0.382s; }
+    .lb3 { height: 28px; background: var(--gold); animation: bar-rise var(--phi3) ease-in-out infinite 0.764s; }
 
     @keyframes bar-rise {
       0%   { transform: scaleY(0); opacity: 0; }
@@ -78,14 +65,11 @@
       font-family: var(--tnr);
       font-size: 1.5rem;
       font-weight: 700;
-      font-style: italic;       /* Times New Roman italic — как в логотипе */
       letter-spacing: 0.01em;
       color: var(--text);
     }
 
-    /* ══════════════════════════════════════
-       NAV
-    ══════════════════════════════════════ */
+    /* ══ NAV ══ */
     nav {
       position: sticky;
       top: 0;
@@ -124,6 +108,9 @@
       font-size: 0.95rem;
       color: var(--muted);
       text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
       transition: color .2s;
     }
     .btn-ghost:hover { color: var(--text); }
@@ -143,14 +130,39 @@
       text-decoration: none;
       transition: transform .15s, box-shadow .15s;
     }
-    .btn-gold:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 22px rgba(253,195,95,0.45);
+    .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(253,195,95,0.45); }
+
+    .nav-username {
+      font-family: var(--tnr);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
     }
 
-    /* ══════════════════════════════════════
-       HERO
-    ══════════════════════════════════════ */
+    .nav-points {
+      font-family: var(--tnr);
+      font-size: 0.85rem;
+      color: #9a6c10;
+      background: rgba(253,195,95,0.16);
+      border: 1px solid rgba(253,195,95,0.38);
+      padding: 5px 12px;
+      border-radius: 999px;
+    }
+
+    .btn-logout {
+      font-family: var(--tnr);
+      font-size: 0.88rem;
+      color: var(--muted);
+      background: none;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-logout:hover { border-color: var(--gold); color: var(--text); }
+
+    /* ══ HERO ══ */
     .hero {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -185,10 +197,7 @@
       margin-bottom: 22px;
     }
 
-    .hero h1 em {
-      font-style: italic;
-      color: #9a6c10;
-    }
+    .hero h1 em { font-style: italic; color: #9a6c10; }
 
     .hero-desc {
       font-family: var(--tnr);
@@ -199,12 +208,7 @@
       margin-bottom: 40px;
     }
 
-    .hero-actions {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
+    .hero-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 
     .btn-gold-lg {
       display: inline-flex;
@@ -221,10 +225,7 @@
       text-decoration: none;
       transition: transform .15s, box-shadow .15s;
     }
-    .btn-gold-lg:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(253,195,95,0.5);
-    }
+    .btn-gold-lg:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(253,195,95,0.5); }
 
     .btn-border-lg {
       display: inline-flex;
@@ -243,70 +244,33 @@
     }
     .btn-border-lg:hover { border-color: var(--gold); color: var(--text); }
 
-    /* ══════════════════════════════════════
-       HERO VISUAL — три столба + золотая спираль
-    ══════════════════════════════════════ */
+    /* ══ HERO VISUAL — большие анимированные бары + спираль ══ */
     .hero-visual { display: flex; flex-direction: column; gap: 20px; }
 
-    .pillars-box {
+    .bars-hero-box {
       background: var(--bg-2);
       border: 1px solid var(--border);
       border-radius: 24px;
-      padding: 32px 24px 20px;
+      padding: 40px 24px 28px;
       display: flex;
       align-items: flex-end;
-      gap: 14px;
+      justify-content: center;
+      gap: 0;
       height: 300px;
       position: relative;
       overflow: hidden;
     }
 
-    /* Золотая спираль SVG — нижний правый угол */
+    .bh { transform-origin: bottom center; border-radius: 8px 8px 3px 3px; }
+    .bh1 { width: 64px; height: 62px;  background: var(--gold-33); border: 2px solid rgba(253,195,95,0.55); animation: bar-rise var(--phi3) ease-in-out infinite 0s; }
+    .bh2 { width: 64px; height: 100px; background: var(--gold-66); border: 2px solid rgba(253,195,95,0.82); animation: bar-rise var(--phi3) ease-in-out infinite 0.382s; }
+    .bh3 { width: 64px; height: 162px; background: var(--gold); animation: bar-rise var(--phi3) ease-in-out infinite 0.764s; }
+
     .spiral-wrap {
       position: absolute;
       bottom: 20px;
       right: 20px;
       pointer-events: none;
-    }
-
-    .pillar-col {
-      flex: 1;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-
-    .pillar-fill {
-      width: 100%;
-      border-radius: 10px 10px 3px 3px;
-      position: relative;
-    }
-
-    .pf1 { height: 33%; background: var(--gold-33); border: 1.5px solid rgba(253,195,95,0.55); }
-    .pf2 { height: 66%; background: var(--gold-66); border: 1.5px solid rgba(253,195,95,0.82); }
-    .pf3 { height: 99%; background: var(--gold); }
-
-    .p-pct {
-      position: absolute;
-      top: -24px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: var(--tnr);
-      font-size: 0.82rem;
-      font-style: italic;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .p-label {
-      font-family: var(--tnr);
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
     }
 
     .hero-stats {
@@ -323,31 +287,53 @@
       text-align: center;
     }
 
-    .stat-n {
-      font-family: var(--tnr);
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1;
+    .stat-n { font-family: var(--tnr); font-size: 1.5rem; font-weight: 700; color: var(--text); line-height: 1; }
+    .stat-l { font-family: var(--tnr); font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+
+    /* ══ MOCK TESTS ══ */
+    .mock-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
     }
 
-    .stat-l {
+    .mock-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 26px;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .mock-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+
+    .mock-num {
       font-family: var(--tnr);
-      font-size: 0.7rem;
-      letter-spacing: 0.07em;
+      font-size: 3rem;
+      font-weight: 700;
+      color: rgba(253,195,95,0.4);
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+
+    .mock-badge {
+      display: inline-block;
+      font-family: var(--tnr);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-top: 4px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 14px;
     }
 
-    /* ══════════════════════════════════════
-       FEATURES
-    ══════════════════════════════════════ */
-    .wrap {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 80px 64px;
-    }
+    .mock-card h3 { font-family: var(--tnr); font-size: 1.12rem; font-weight: 700; margin-bottom: 8px; }
+    .mock-card p  { font-family: var(--tnr); font-size: 0.9rem; color: var(--muted); line-height: 1.6; margin-bottom: 22px; }
+
+    /* ══ FEATURES ══ */
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 80px 64px; }
 
     .sec-tag {
       display: block;
@@ -359,28 +345,10 @@
       margin-bottom: 12px;
     }
 
-    .sec-h2 {
-      font-family: var(--tnr);
-      font-size: clamp(1.9rem, 3vw, 2.8rem);
-      font-weight: 700;
-      line-height: 1.15;
-      margin-bottom: 14px;
-    }
+    .sec-h2 { font-family: var(--tnr); font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 700; line-height: 1.15; margin-bottom: 14px; }
+    .sec-sub { font-family: var(--tnr); font-size: 1.05rem; color: var(--muted); max-width: 500px; line-height: 1.72; margin-bottom: 48px; }
 
-    .sec-sub {
-      font-family: var(--tnr);
-      font-size: 1.05rem;
-      color: var(--muted);
-      max-width: 500px;
-      line-height: 1.72;
-      margin-bottom: 48px;
-    }
-
-    .feat-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
+    .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 
     .feat-card {
       background: white;
@@ -391,77 +359,29 @@
     }
     .feat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
 
-    .feat-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      margin-bottom: 22px;
-    }
+    .feat-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 22px; }
     .fi1 { background: var(--gold-33); }
     .fi2 { background: var(--gold-66); }
     .fi3 { background: var(--gold); }
 
-    .feat-card h3 {
-      font-family: var(--tnr);
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
+    .feat-card h3 { font-family: var(--tnr); font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+    .feat-card p  { font-family: var(--tnr); font-size: 0.95rem; color: var(--muted); line-height: 1.68; }
 
-    .feat-card p {
-      font-family: var(--tnr);
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.68;
-    }
+    /* ══ HOW IT WORKS ══ */
+    .how-bg { background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
-    /* ══════════════════════════════════════
-       HOW IT WORKS
-    ══════════════════════════════════════ */
-    .how-bg {
-      background: var(--bg-2);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 40px;
-      position: relative;
-    }
-
-    .steps::before {
-      content: '';
-      position: absolute;
-      top: 27px;
-      left: calc(16.66% + 16px);
-      right: calc(16.66% + 16px);
-      height: 1px;
-      background: var(--border);
-    }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; position: relative; }
+    .steps::before { content: ''; position: absolute; top: 27px; left: calc(16.66% + 16px); right: calc(16.66% + 16px); height: 1px; background: var(--border); }
 
     .step { text-align: center; }
 
     .step-circle {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--tnr);
-      font-size: 1.2rem;
-      font-weight: 700;
-      font-style: italic;
+      width: 56px; height: 56px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--tnr); font-size: 1.2rem; font-weight: 700; font-style: italic;
       margin: 0 auto 20px;
       border: 2px solid var(--gold);
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
     }
     .sc1 { background: var(--gold-33); color: #9a6c10; }
     .sc2 { background: var(--gold-66); color: #7a5010; }
@@ -470,47 +390,99 @@
     .step h3 { font-family: var(--tnr); font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
     .step p   { font-family: var(--tnr); font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
 
-    /* ══════════════════════════════════════
-       CTA
-    ══════════════════════════════════════ */
+    /* ══ CTA ══ */
     .cta-section { text-align: center; padding: 96px 40px; }
+    .cta-section h2 { font-family: var(--tnr); font-size: clamp(1.9rem, 3vw, 2.6rem); font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+    .cta-section p  { font-family: var(--tnr); color: var(--muted); font-size: 1.05rem; max-width: 480px; margin: 0 auto 36px; line-height: 1.72; }
 
-    .cta-section h2 {
-      font-family: var(--tnr);
-      font-size: clamp(1.9rem, 3vw, 2.6rem);
-      font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 16px;
-    }
-
-    .cta-section p {
-      font-family: var(--tnr);
-      color: var(--muted);
-      font-size: 1.05rem;
-      max-width: 480px;
-      margin: 0 auto 36px;
-      line-height: 1.72;
-    }
-
-    /* ══════════════════════════════════════
-       FOOTER
-    ══════════════════════════════════════ */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 28px 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
+    /* ══ FOOTER ══ */
+    footer { border-top: 1px solid var(--border); padding: 28px 64px; display: flex; align-items: center; justify-content: space-between; }
     .foot-copy { font-family: var(--tnr); font-size: 0.85rem; color: var(--muted); }
     .foot-links { display: flex; gap: 24px; }
     .foot-links a { font-family: var(--tnr); font-size: 0.85rem; color: var(--muted); text-decoration: none; transition: color .2s; }
     .foot-links a:hover { color: var(--text); }
 
-    /* ══════════════════════════════════════
-       RESPONSIVE
-    ══════════════════════════════════════ */
+    /* ══ AUTH MODAL ══ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.38);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal-box {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      background: none; border: none;
+      font-size: 1.1rem; color: var(--muted);
+      cursor: pointer; padding: 4px 8px;
+      border-radius: 6px; transition: background .15s;
+    }
+    .modal-close:hover { background: var(--bg-2); }
+
+    .modal-tabs { display: flex; margin-bottom: 28px; border-bottom: 1px solid var(--border); }
+
+    .modal-tab {
+      flex: 1; padding: 10px;
+      background: none; border: none;
+      font-family: var(--tnr); font-size: 0.95rem;
+      color: var(--muted); cursor: pointer;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: color .15s, border-color .15s;
+    }
+    .modal-tab.active { color: var(--text); border-bottom-color: var(--gold); }
+
+    .modal-form { display: flex; flex-direction: column; gap: 12px; }
+
+    .modal-input {
+      width: 100%; padding: 12px 16px;
+      background: var(--bg-2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text); font-family: var(--tnr); font-size: 0.95rem;
+      outline: none; transition: border-color .2s;
+    }
+    .modal-input:focus { border-color: var(--gold); }
+    .modal-input::placeholder { color: var(--muted); }
+
+    .modal-submit {
+      width: 100%; padding: 13px;
+      background: var(--gold); color: var(--text);
+      font-family: var(--tnr); font-size: 0.95rem;
+      border: none; border-radius: 999px; cursor: pointer;
+      margin-top: 4px; transition: transform .15s, box-shadow .15s;
+    }
+    .modal-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(253,195,95,0.45); }
+
+    .modal-error {
+      font-family: var(--tnr); font-size: 0.88rem;
+      color: #b91c1c;
+      background: rgba(239,68,68,0.07);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 8px; padding: 10px 14px; display: none;
+    }
+    .modal-error.show { display: block; }
+
+    /* ══ RESPONSIVE ══ */
     @media (max-width: 960px) {
       nav { padding: 0 24px; }
       .nav-links { display: none; }
@@ -518,7 +490,7 @@
       .hero-desc { margin: 0 auto 36px; }
       .hero-actions { justify-content: center; }
       .wrap { padding: 56px 24px; }
-      .feat-grid { grid-template-columns: 1fr; }
+      .feat-grid, .mock-grid { grid-template-columns: 1fr; }
       .steps { grid-template-columns: 1fr; }
       .steps::before { display: none; }
       footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
@@ -535,18 +507,19 @@
       <div class="lb lb2"></div>
       <div class="lb lb3"></div>
     </div>
-    <span class="logo-name">senu</span>
+    <span class="logo-name">SENU</span>
   </a>
 
   <ul class="nav-links">
+    <li><a href="#mock-tests">Mock Tests</a></li>
     <li><a href="#features">Features</a></li>
     <li><a href="#how">How it works</a></li>
     <li><a href="quiz.html">Practice</a></li>
   </ul>
 
-  <div class="nav-right">
-    <a href="#" class="btn-ghost">Log in</a>
-    <a href="quiz.html" class="btn-gold">Start Free →</a>
+  <div class="nav-right" id="nav-right">
+    <button class="btn-ghost" onclick="openModal('login')">Log in</button>
+    <button class="btn-gold" onclick="openModal('register')">Sign up →</button>
   </div>
 </nav>
 
@@ -563,38 +536,25 @@
   </div>
 
   <div class="hero-visual">
-    <div class="pillars-box">
-      <!-- Три столба -->
-      <div class="pillar-col">
-        <div class="pillar-fill pf1"><span class="p-pct">33%</span></div>
-        <span class="p-label">Learn</span>
-      </div>
-      <div class="pillar-col">
-        <div class="pillar-fill pf2"><span class="p-pct">66%</span></div>
-        <span class="p-label">Practice</span>
-      </div>
-      <div class="pillar-col">
-        <div class="pillar-fill pf3"><span class="p-pct">99%</span></div>
-        <span class="p-label">Master</span>
-      </div>
+    <!-- Анимированные бары (φ-пропорции: 1 : φ : φ²) -->
+    <div class="bars-hero-box">
+      <div class="bh bh1"></div>
+      <div class="bh bh2"></div>
+      <div class="bh bh3"></div>
 
-      <!-- Золотая спираль (SVG генерируется JS) -->
       <div class="spiral-wrap">
         <svg id="spiral-svg" width="90" height="90" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg" overflow="visible">
-          <!-- Окружность золотого сечения (синяя, как в логотипе) -->
           <circle cx="45" cy="45" r="40"
                   fill="none"
                   stroke="rgba(60,80,240,0.22)"
                   stroke-width="1"
                   stroke-dasharray="4 6"/>
-          <!-- Спираль (путь задаётся JS) -->
           <path id="spiral-path"
                 fill="none"
                 stroke="#fdc35f"
                 stroke-width="1.6"
                 stroke-linecap="round"
                 opacity="0.75"/>
-          <!-- Центральная точка -->
           <circle cx="45" cy="45" r="2.2" fill="rgba(30,20,10,0.45)"/>
         </svg>
       </div>
@@ -616,6 +576,39 @@
     </div>
   </div>
 </section>
+
+<!-- ═══════ MOCK TESTS ═══════ -->
+<div class="how-bg">
+  <div class="wrap" id="mock-tests">
+    <span class="sec-tag">Practice Exams</span>
+    <h2 class="sec-h2">Mock Tests</h2>
+    <p class="sec-sub">Full-length NUET-style exams. Complete all questions, then see your detailed score breakdown.</p>
+
+    <div class="mock-grid">
+      <div class="mock-card">
+        <div class="mock-num">01</div>
+        <span class="mock-badge">Critical Thinking · Mathematics</span>
+        <h3>Mock Test 1</h3>
+        <p>Standard difficulty. Covers core NUET argument types and foundational maths problems.</p>
+        <a href="quiz.html" class="btn-gold">Start →</a>
+      </div>
+      <div class="mock-card">
+        <div class="mock-num">02</div>
+        <span class="mock-badge">Critical Thinking · Mathematics</span>
+        <h3>Mock Test 2</h3>
+        <p>Intermediate level. Increases complexity in both CT and MA sections.</p>
+        <a href="quiz.html" class="btn-gold">Start →</a>
+      </div>
+      <div class="mock-card">
+        <div class="mock-num">03</div>
+        <span class="mock-badge">Critical Thinking · Mathematics</span>
+        <h3>Mock Test 3</h3>
+        <p>Advanced difficulty. Closest to real NUET exam conditions and question depth.</p>
+        <a href="quiz.html" class="btn-gold">Start →</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ═══════ FEATURES ═══════ -->
 <section class="wrap" id="features">
@@ -672,7 +665,7 @@
 <!-- ═══════ CTA ═══════ -->
 <section class="cta-section">
   <h2>Ready to prepare<br>for NUET?</h2>
-  <p>Join students using SENU to prepare smarter. Free to start — no account needed.</p>
+  <p>Create an account to track your history and earn points — or start practising right away for free.</p>
   <a href="quiz.html" class="btn-gold-lg">Begin Practice Session →</a>
 </section>
 
@@ -686,29 +679,52 @@
   </div>
 </footer>
 
+<!-- ═══════ AUTH MODAL ═══════ -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tab-login" onclick="switchTab('login')">Log in</button>
+      <button class="modal-tab" id="tab-register" onclick="switchTab('register')">Sign up</button>
+    </div>
+
+    <div id="form-login">
+      <div class="modal-form">
+        <div class="modal-error" id="login-error"></div>
+        <input class="modal-input" id="login-email" type="email" placeholder="Email" />
+        <input class="modal-input" id="login-password" type="password" placeholder="Password" />
+        <button class="modal-submit" onclick="doLogin()">Log in →</button>
+      </div>
+    </div>
+
+    <div id="form-register" style="display:none">
+      <div class="modal-form">
+        <div class="modal-error" id="register-error"></div>
+        <input class="modal-input" id="reg-username" type="text" placeholder="Username" />
+        <input class="modal-input" id="reg-email" type="email" placeholder="Email" />
+        <input class="modal-input" id="reg-password" type="password" placeholder="Password (min 6 chars)" />
+        <button class="modal-submit" onclick="doRegister()">Create account →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ══════════════════════════════════════════════
-   ЗОЛОТАЯ СПИРАЛЬ — генерация пути + анимация
-   φ = 1.6180339887...
-   Уравнение: r = a · e^(b·θ),  b = ln(φ)/(π/2)
+   ЗОЛОТАЯ СПИРАЛЬ
 ══════════════════════════════════════════════ */
 (function () {
   const PHI  = 1.6180339887;
   const b    = Math.log(PHI) / (Math.PI / 2);
-  const CX   = 45, CY = 45;
-  const A    = 2.8;       // начальный радиус (внутри)
-  const TURNS = 2;        // два оборота
-  const STEPS = 300;
-  const CYCLE = 4236;     // φ³ ≈ 4.236 секунды
+  const CX = 45, CY = 45, A = 2.8, TURNS = 2, STEPS = 300, CYCLE = 4236;
 
-  /* --- генерация SVG-пути --- */
-  function buildPath () {
+  function buildPath() {
     let d = '';
     for (let i = 0; i <= STEPS; i++) {
       const theta = (i / STEPS) * TURNS * 2 * Math.PI;
       const r = A * Math.exp(b * theta);
       const x = CX + r * Math.cos(theta);
-      const y = CY - r * Math.sin(theta); /* флип Y для SVG */
+      const y = CY - r * Math.sin(theta);
       d += (i === 0 ? 'M ' : ' L ') + x.toFixed(2) + ',' + y.toFixed(2);
     }
     return d;
@@ -716,58 +732,148 @@
 
   const pathEl = document.getElementById('spiral-path');
   pathEl.setAttribute('d', buildPath());
-
   const LEN = pathEl.getTotalLength();
   pathEl.style.strokeDasharray  = LEN;
   pathEl.style.strokeDashoffset = LEN;
 
-  /* --- анимация: рисуется → держится → стирается → пауза → снова ---
-     Тайминг в пропорциях φ:
-       рисование  = CYCLE × 0.20  ≈  φ/φ² секунды
-       удержание  = CYCLE × 0.44
-       стирание   = CYCLE × 0.20
-       пауза      = CYCLE × 0.16
-  */
   let start = null;
+  function easeInOut(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
 
-  function easeInOut(t) {
-    return t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
-  }
-
-  function tick (ts) {
+  function tick(ts) {
     if (!start) start = ts;
-    const elapsed = (ts - start) % CYCLE;
-    const t = elapsed / CYCLE;          // 0…1 в рамках цикла
-
+    const t = ((ts - start) % CYCLE) / CYCLE;
     let offset, opacity;
-
-    if (t < 0.20) {
-      // рисование: offset от LEN до 0
-      const p = easeInOut(t / 0.20);
-      offset  = LEN * (1 - p);
-      opacity = p;
-    } else if (t < 0.64) {
-      // удержание
-      offset  = 0;
-      opacity = 1;
-    } else if (t < 0.84) {
-      // стирание: offset от 0 до LEN
-      const p = easeInOut((t - 0.64) / 0.20);
-      offset  = LEN * p;
-      opacity = 1 - p;
-    } else {
-      // пауза
-      offset  = LEN;
-      opacity = 0;
-    }
-
+    if (t < 0.20)      { const p = easeInOut(t / 0.20);         offset = LEN * (1 - p); opacity = p; }
+    else if (t < 0.64) {                                          offset = 0;             opacity = 1; }
+    else if (t < 0.84) { const p = easeInOut((t - 0.64) / 0.20); offset = LEN * p;       opacity = 1 - p; }
+    else               {                                          offset = LEN;           opacity = 0; }
     pathEl.style.strokeDashoffset = offset;
     pathEl.style.opacity          = opacity;
     requestAnimationFrame(tick);
   }
-
   requestAnimationFrame(tick);
 })();
+
+/* ══════════════════════════════════════════════
+   AUTH
+══════════════════════════════════════════════ */
+const API = 'http://localhost:8000';
+
+function getToken() { return localStorage.getItem('senu_token'); }
+function getUser()  { return JSON.parse(localStorage.getItem('senu_user') || 'null'); }
+
+function setSession(token, user) {
+  localStorage.setItem('senu_token', token);
+  localStorage.setItem('senu_user', JSON.stringify(user));
+  updateNav();
+}
+
+function clearSession() {
+  localStorage.removeItem('senu_token');
+  localStorage.removeItem('senu_user');
+  updateNav();
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function updateNav() {
+  const user = getUser();
+  const nr = document.getElementById('nav-right');
+  if (!nr) return;
+  if (user) {
+    nr.innerHTML =
+      `<span class="nav-username">${esc(user.username)}</span>` +
+      `<span class="nav-points" id="nav-pts">⭐ ${user.points} pts</span>` +
+      `<button class="btn-logout" onclick="doLogout()">Log out</button>`;
+  } else {
+    nr.innerHTML =
+      `<button class="btn-ghost" onclick="openModal('login')">Log in</button>` +
+      `<button class="btn-gold" onclick="openModal('register')">Sign up →</button>`;
+  }
+}
+
+function openModal(tab) {
+  document.getElementById('auth-modal').classList.add('open');
+  switchTab(tab || 'login');
+}
+function closeModal() {
+  document.getElementById('auth-modal').classList.remove('open');
+}
+function switchTab(tab) {
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  document.getElementById('form-login').style.display    = tab === 'login'    ? '' : 'none';
+  document.getElementById('form-register').style.display = tab === 'register' ? '' : 'none';
+}
+
+document.getElementById('auth-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('auth-modal')) closeModal();
+});
+
+async function doLogin() {
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl    = document.getElementById('login-error');
+  errEl.classList.remove('show');
+  try {
+    const res  = await fetch(`${API}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.detail || 'Login failed'; errEl.classList.add('show'); return; }
+    setSession(data.token, { username: data.username, points: data.points });
+    closeModal();
+  } catch {
+    errEl.textContent = 'Connection error — is the server running?';
+    errEl.classList.add('show');
+  }
+}
+
+async function doRegister() {
+  const username = document.getElementById('reg-username').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const errEl    = document.getElementById('register-error');
+  errEl.classList.remove('show');
+  if (!username) { errEl.textContent = 'Username is required'; errEl.classList.add('show'); return; }
+  try {
+    const res  = await fetch(`${API}/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.detail || 'Registration failed'; errEl.classList.add('show'); return; }
+    // Auto-login after registration
+    const lr   = await fetch(`${API}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const ld   = await lr.json();
+    if (lr.ok) { setSession(ld.token, { username: ld.username, points: ld.points }); closeModal(); }
+    else switchTab('login');
+  } catch {
+    errEl.textContent = 'Connection error — is the server running?';
+    errEl.classList.add('show');
+  }
+}
+
+async function doLogout() {
+  const token = getToken();
+  if (token) {
+    try { await fetch(`${API}/logout`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }); }
+    catch { /* ignore */ }
+  }
+  clearSession();
+}
+
+// Инициализация навбара при загрузке
+updateNav();
 </script>
 
 </body>

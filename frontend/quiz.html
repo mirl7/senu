@@ -58,7 +58,6 @@
       font-family: var(--tnr);
       font-size: 1.3rem;
       font-weight: 700;
-      font-style: italic;
     }
 
     /* ══ NAV ══ */
@@ -77,6 +76,16 @@
     }
 
     .nav-score { font-family: var(--tnr); font-size: 0.9rem; color: var(--muted); }
+
+    .nav-pts-pill {
+      font-family: var(--tnr);
+      font-size: 0.82rem;
+      color: #9a6c10;
+      background: rgba(253,195,95,0.16);
+      border: 1px solid rgba(253,195,95,0.38);
+      padding: 4px 11px;
+      border-radius: 999px;
+    }
 
     /* ══ SCREENS ══ */
     .screen { display: none; }
@@ -522,9 +531,12 @@
       <div class="lb lb2"></div>
       <div class="lb lb3"></div>
     </div>
-    <span class="logo-name">senu</span>
+    <span class="logo-name">SENU</span>
   </a>
-  <span class="nav-score" id="nav-score"></span>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="nav-score" id="nav-score"></span>
+    <span class="nav-pts-pill" id="nav-pts" style="display:none"></span>
+  </div>
 </nav>
 
 <!-- START -->
@@ -764,11 +776,27 @@ async function showResults() {
   const pct   = score / total;
 
   try {
-    await fetch('http://localhost:8000/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const token   = localStorage.getItem('senu_token');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res  = await fetch('http://localhost:8000/submit', {
+      method: 'POST', headers,
       body: JSON.stringify({ name: userName, score, total, section })
     });
+    if (res.ok && token) {
+      const data = await res.json();
+      if (data.points_earned > 0) {
+        const ptsEl = document.getElementById('nav-pts');
+        ptsEl.textContent = `+${data.points_earned} pts earned`;
+        ptsEl.style.display = '';
+        // обновить локальный кэш очков
+        const user = JSON.parse(localStorage.getItem('senu_user') || 'null');
+        if (user && data.total_points != null) {
+          user.points = data.total_points;
+          localStorage.setItem('senu_user', JSON.stringify(user));
+        }
+      }
+    }
   } catch(e) {}
 
   showScreen('result-screen');
@@ -805,6 +833,19 @@ async function showResults() {
 }
 
 function retryQuiz() { startQuiz(); }
+
+// Показать имя/очки пользователя в навбаре если залогинен
+(function () {
+  const user = JSON.parse(localStorage.getItem('senu_user') || 'null');
+  if (user) {
+    const ptsEl = document.getElementById('nav-pts');
+    ptsEl.textContent = `⭐ ${user.points} pts`;
+    ptsEl.style.display = '';
+    // Подставить имя в поле name
+    const nameInput = document.getElementById('user-name');
+    if (nameInput && !nameInput.value) nameInput.value = user.username;
+  }
+})();
 </script>
 </body>
 </html>
