@@ -6,7 +6,7 @@
   <title>SENU — Adaptive NUET Exam Prep</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">  
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -308,6 +308,28 @@
       .feat-item:last-child { border-bottom: none; padding-bottom: 0; }
       footer { padding: 18px 20px; flex-direction: column; gap: 10px; text-align: center; }
     }
+
+
+    :root {
+  --bg:     #0d0c0a;
+  --bg-2:   #16140f;
+  --text:   #f4efe4;
+  --muted:  #a39b8c;
+  --border: #2a261f;
+}
+nav         { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255,255,0.06); }
+.test-card  { background: #15130f; }
+.test-card:hover { box-shadow: 0 10px 36px rgba(0,0,0,0.55); }
+.modal-box      { background: #16140f; }
+.modal-overlay  { background: rgba(0,0,0,0.6); }
+/* текст на золотых кнопках оставляем тёмным, иначе сольётся */
+.btn-primary, .btn-gold-sm, .modal-submit { color: #181510; }
+/* акцентный текст делаем ярче, чтобы читался на тёмном */
+.sec-label, .hero-tag, .nav-points { color: #f0c674; }
+.test-free   { color: #6ee7a0; }
+.modal-error { color: #fca5a5; }
+
+
   </style>
 </head>
 <body>
