@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SENU — Practice</title>
-  <link href="https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-sans/style.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -20,7 +22,7 @@
       --green:   #22c55e;
       --red:     #ef4444;
       --radius:  14px;
-      --tnr:     'Geist', sans-serif;
+      --tnr:     'Inter', sans-serif;
       --phi3:    4.236s;
     }
 
@@ -520,28 +522,6 @@
       .quiz-card-head, .quiz-card-foot { padding: 16px 18px; }
       .result-card { padding: 36px 24px; }
     }
-
-
-
-
-    :root {
-  --bg:     #0d0c0a;
-  --bg-2:   #16140f;
-  --text:   #f4efe4;
-  --muted:  #a39b8c;
-  --border: #2a261f;
-}
-nav { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255,255,0.06); }
-.start-card, .quiz-card, .result-card { background: #15130f; }
-/* текст на золотых кнопках — тёмный */
-.btn-start, .btn-next { color: #181510; }
-.opt.selected .opt-letter { color: #181510; }
-/* пилюли и фидбек ярче на тёмном фоне */
-.q-pill { color: #f0c674; }
-.feedback.fb-correct { color: #6ee7a0; }
-.feedback.fb-wrong   { color: #fca5a5; }
-
-
   </style>
 </head>
 <body>
@@ -630,84 +610,220 @@ nav { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255,255,0.0
 </div>
 
 <script>
+/* ============================================================
+   SENU — Adaptive Practice Engine
+   Каждый вопрос помечен уровнем сложности: 1=Easy, 2=Medium, 3=Hard.
+   Движок подбирает следующий вопрос ближе всего к текущему
+   уровню ученика; верный ответ повышает уровень, ошибка — понижает.
+============================================================ */
+
 const CT_QUESTIONS = [
   {
-    topic: "Identifying Conclusions",
-    text: "Sometimes poverty is defined in relation to average income. For example, people may be said to be poor if their income is less than 60 per cent of the average income for the population. This is not a legitimate definition, because it is a measure of inequality rather than poverty. This is obvious if we consider the consequences of using the definition. It means that a huge pay rise for middle managers automatically throws some people into poverty, even though their income has not changed. On the other hand, the definition implies that in a society where almost everyone is starving, no one is poor.\n\nWhich of the following best expresses the main conclusion of the above argument?",
-    options: ["Having a relatively low income is not the same as being poor.","It is impossible to find an appropriate definition of poverty.","It is wrong to define poverty in relation to average income.","A huge pay rise for middle managers makes other people poor.","There is no inequality in a society where most people are starving."],
-    answer: 2,
-    explanation: "The passage argues specifically against defining poverty using average income — that is the main conclusion, not the broader claim that all definitions fail."
+    topic: "Identifying Conclusions", difficulty: 1,
+    text: "In the last few decades, the technology of travel has developed rapidly. In particular, flying has opened up the whole world to the keen traveller. Moreover, in many countries, the cost of flying is becoming more affordable. But the increased ability to travel has brought many undesirable consequences. Increased environmental awareness may produce guilt over the pollution air travel causes; others may be alarmed by the prospect of hi-jackings or terrorist attacks. Thus the sheer ability to travel will not necessarily lead to an increase in the amount of travel.\n\nWhich of the following is the best expression of the main conclusion?",
+    options: ["An increase in the ability to travel is being accompanied by a declining desire to travel.","The technology of travel has never been more developed, particularly in flight.","Increased environmental awareness is producing feelings of guilt in some travellers.","In many countries the cost of flights is becoming more affordable.","The amount of travel will not necessarily increase as a result of more opportunities to travel."],
+    answer: 4,
+    explanation: "The final sentence is the conclusion: more opportunity to travel won't necessarily mean more travel — option E restates it."
   },
   {
-    topic: "Identifying Flaws",
-    text: "Over the past ten years, there has been a four-fold increase in the number of people killed in road accidents who are found to have illegal drugs in their bodies. The rate of increase is much greater than the corresponding rate for those people killed in accidents who were found with alcohol in their blood. This shows that the campaign against drink-driving has succeeded. Consequently, the Government ought now to concentrate on targeting those people who drive whilst under the influence of illegal drugs.\n\nWhich of the following is the best statement of the flaw in the argument above?",
-    options: ["Those who take illegal drugs and drive are likely different from those who drink and drive.","Targeting drug drivers ignores people who take drugs but do not drive.","The success of the drink-driving campaign does not mean a drug campaign would succeed.","The increase in drug-related road deaths is insufficient to conclude the drink-driving campaign succeeded.","Evidence needs to distinguish between illegal and legal drugs."],
-    answer: 3,
-    explanation: "The flaw is that the argument uses the rise in drug deaths as evidence the drink-driving campaign worked — these are separate trends and one does not prove the other."
-  },
-  {
-    topic: "Drawing Conclusions",
-    text: "Socialist politicians are often taunted by their opponents for leading lifestyles similar to those of their capitalist counterparts. The theme runs: 'You object on socialist principles to gross inequalities in the distribution of wealth; yet you enjoy a higher personal standard of living than the majority. Therefore you are not really a socialist.' But the jibe can easily be answered, for there is no hypocrisy in arguing, even from a privileged position, for a fairer and more equal society.\n\nWhich of the following is a conclusion which can be reliably drawn from the passage as a whole?",
-    options: ["Socialists who enjoy personal wealth cannot object to others who amass even greater wealth.","Someone can be a genuine socialist whilst enjoying a high standard of living.","Calls for reform are more effective if they come from the more privileged classes.","There is nothing immoral about inequalities in the distribution of wealth.","It is hypocritical to claim to be a socialist if one enjoys an above-average standard of living."],
-    answer: 1,
-    explanation: "The passage directly refutes the idea that personal wealth disqualifies someone from being a socialist — so B follows reliably from the argument."
-  },
-  {
-    topic: "Identifying Assumptions",
-    text: "The Executive of the Students' Union recently carried out a survey to identify dangerous areas on campus. This led to improved lighting in suspect areas. Such reforms can only help reduce the number of attacks on campus. However, the University lake was not included in the survey as it belongs to the City Council. This means the University has no direct influence over safety standards there. It should therefore definitely be avoided by lone students at night.\n\nWhich one of the following is an underlying assumption of this argument?",
-    options: ["Students do not look after their own safety but rely on others to take measures on their behalf.","The City Council regards the lake area as part of the campus.","Students walking on and off campus at night would go via the university lake.","The safety measures taken by the City Council are either non-existent or inferior to those implemented by the Student Union.","The Student Union is not merely seeking popularity but is genuinely concerned about safety risks."],
-    answer: 3,
-    explanation: "The argument assumes the lake is less safe because the University can't control it — this only holds if we assume Council safety measures are absent or inferior."
-  },
-  {
-    topic: "Evaluating Evidence",
+    topic: "Evaluating Evidence", difficulty: 1,
     text: "A study found that students who listen to classical music while studying score higher on tests than those who study in silence. Therefore, schools should play classical music in classrooms during study periods to improve academic performance.\n\nWhich of the following, if true, most weakens this argument?",
     options: ["Many students find classical music distracting rather than helpful.","The students who chose to listen to classical music were already high achievers who sought out additional resources.","Classical music is expensive to licence for school use.","Some students prefer other genres of music.","Test scores are not the only measure of academic performance."],
     answer: 1,
-    explanation: "If the students who listened to classical music were already high achievers, the music may not have caused the higher scores — the correlation is explained by a confounding variable."
+    explanation: "If those students were already high achievers, the music may not have caused the higher scores — a confounding variable explains the correlation."
+  },
+  {
+    topic: "Identifying Conclusions", difficulty: 1,
+    text: "Children and young people have long been protected from exploitation by the entertainment industry. In recent years, the number of young people suddenly thrust into the limelight has increased. Dealing with fame, performing for large audiences, the rigours of rehearsal and the stresses of a difficult occupation take maturity and can rob children of their childhood. Rejection and failure are felt more keenly by young people because they lack wider experience. These factors indicate that young performers need further protection by law.\n\nWhich of the following best expresses the main conclusion?",
+    options: ["Young people have been protected from exploitation for many years.","Young people feel rejection and failure more because they lack experience.","Young performers are robbed of their childhood by the demands of performing.","Young people can be suddenly thrust into the limelight.","Young performers need further protection by law."],
+    answer: 4,
+    explanation: "Everything in the passage is offered as support for the final recommendation: young performers need further legal protection."
+  },
+  {
+    topic: "Drawing Conclusions", difficulty: 1,
+    text: "Recent riots against World Trade Organisation meetings have forced globalisation onto TV screens worldwide. But the topic raised its head in 1940s France in the shape of the Coca-Cola bottle. This container and its contents provoked fury, prompting parliamentary debates and front-page editorials warning of the alleged menace to French health, its wine industry, and France's very way of life. As the Cold War began, many in France viewed this symbol of globalisation as everything they did not want — and said so loudly.\n\nWhich of the following is a conclusion that can be drawn from the passage?",
+    options: ["Anti-globalisation protest is not something new.","There are health risks associated with Coca-Cola.","Coca-Cola was a threat to the French wine industry in the 1940s.","Globalisation has altered France's way of life.","France was the first nation to stand up to globalisation."],
+    answer: 0,
+    explanation: "The 1940s French reaction to Coca-Cola is given to show that anti-globalisation protest is not a new phenomenon."
+  },
+  {
+    topic: "Identifying Conclusions", difficulty: 2,
+    text: "Sometimes poverty is defined in relation to average income — for example, people are poor if their income is less than 60% of the average. This is not a legitimate definition, because it measures inequality rather than poverty. Consider the consequences: a huge pay rise for middle managers automatically throws some people into poverty, even though their income has not changed. On the other hand, the definition implies that in a society where almost everyone is starving, no one is poor.\n\nWhich of the following best expresses the main conclusion?",
+    options: ["Having a relatively low income is not the same as being poor.","It is impossible to find an appropriate definition of poverty.","It is wrong to define poverty in relation to average income.","A huge pay rise for middle managers makes other people poor.","There is no inequality in a society where most people are starving."],
+    answer: 2,
+    explanation: "The passage argues specifically against defining poverty using average income — not the broader claim that all definitions fail."
+  },
+  {
+    topic: "Identifying Flaws", difficulty: 2,
+    text: "When mobile telephones first appeared, the large telephone companies downplayed the importance of this new technology. Despite their trying to persuade us that we did not need mobile phones, and despite the absence of strong advertising by the new mobile phone companies, sales took off more rapidly than any other consumer item ever has. So, clearly, when we buy consumer goods, we do so simply because we want them, and not because we are persuaded by manufacturers and retailers.\n\nWhich of the following states a flaw in the argument?",
+    options: ["It assumes that people need to use mobile phones.","It draws a general conclusion from the example of mobile phones.","It ignores the possible dangers to the health of users.","It makes a prediction about mobile phone sales from insufficient evidence.","It assumes that telephone companies did not want sales to take off."],
+    answer: 1,
+    explanation: "The argument generalises from a single case (mobile phones) to all consumer goods — a hasty generalisation."
+  },
+  {
+    topic: "Drawing Conclusions", difficulty: 2,
+    text: "Socialist politicians are often taunted for leading lifestyles similar to those of their capitalist counterparts. The jibe runs: 'You object on socialist principles to gross inequalities in wealth, yet you enjoy a higher standard of living than most. Therefore you are not really a socialist.' But the jibe can easily be answered, for there is no hypocrisy in arguing, even from a privileged position, for a fairer and more equal society.\n\nWhich of the following is a conclusion that can be reliably drawn?",
+    options: ["Socialists who enjoy personal wealth cannot object to others who amass even greater wealth.","Someone can be a genuine socialist whilst enjoying a high standard of living.","Calls for reform are more effective if they come from privileged classes.","There is nothing immoral about inequalities in the distribution of wealth.","It is hypocritical to claim to be a socialist if one enjoys an above-average standard of living."],
+    answer: 1,
+    explanation: "The passage directly refutes the idea that personal wealth disqualifies someone from being a socialist — so B follows reliably."
+  },
+  {
+    topic: "Identifying Assumptions", difficulty: 2,
+    text: "The Students' Union surveyed the campus to identify dangerous areas, leading to improved lighting. Such reforms can only help reduce attacks. However, the University lake was not included as it belongs to the City Council, so the University has no direct influence over safety standards there. It should therefore definitely be avoided by lone students at night.\n\nWhich one of the following is an underlying assumption of this argument?",
+    options: ["Students do not look after their own safety but rely on others.","The City Council regards the lake area as part of the campus.","Students walking on and off campus at night would go via the lake.","The safety measures taken by the City Council are either non-existent or inferior to those of the Student Union.","The Student Union is genuinely concerned about safety risks."],
+    answer: 3,
+    explanation: "The argument assumes the lake is less safe because the University can't control it — this only holds if Council measures are absent or inferior."
+  },
+  {
+    topic: "Applying Principles", difficulty: 2,
+    text: "It has emerged that prisoners from an open prison have worked night-shifts maintaining a busy railway line. It is all very well to have offenders rehabilitated through work, but what appears to be happening is that rail contractors are cynically using prisoners as cheap labour. This is unacceptable, not just for safety reasons, but because it is an infringement of workers' rights. If these prisoners are paid less, or treated differently from regular workers, the practice must stop.\n\nWhich of the following expresses the general principle underlying the argument?",
+    options: ["Labour is labour and should have the same value whoever is performing it.","Public safety must always be given priority over economic advantages.","Rehabilitation should be for the prisoner's benefit, not the employer's.","Prisoners given work should not take jobs away from other workers.","Maintenance of public services should be in the hands of skilled professionals only."],
+    answer: 0,
+    explanation: "The objection is that prisoners may be paid less for the same work; the principle is that labour has the same value whoever performs it."
+  },
+  {
+    topic: "Identifying Assumptions", difficulty: 2,
+    text: "Of all the food we buy, bread suffers the worst fate: 32% of it is thrown away. We value other foods more, as the average wasted across all food and drink is 15%. Meat and fish thrown away is below average (13%), and our most precious item is alcohol — we throw away just 6% of it.\n\nWhich one of the following is an underlying assumption of the argument?",
+    options: ["The more expensive a food or drink is, the less likely it is to be wasted.","Bread goes stale faster so is more likely to be thrown away.","Bread is a low-quality food.","We should be more moderate when buying bread.","The main reason we throw food away is that we do not value it much."],
+    answer: 4,
+    explanation: "The argument infers how much we value food from how much we waste — assuming waste is mainly driven by low value."
+  },
+  {
+    topic: "Drawing Conclusions", difficulty: 2,
+    text: "There is a belief, the 'Matthew effect', that students who start with poor attainment make less progress than higher-achieving peers. But a study of more than 150,000 young people in Australia, tested between year 3 and year 9, found that students who began with high achievement were not making the progress of which they were capable, while students starting below average made more progress from year 3 to year 9 than those starting above average. This compensatory pattern appeared in both reading and numeracy.\n\nWhich one of the following can be drawn as a conclusion?",
+    options: ["Early promise does not guarantee high achievement in the long term.","Numerical skills are harder to improve than language skills.","Rates of improvement from a low base will always be more rapid than from a higher base.","The 'Matthew effect' is the result of low expectations by teachers.","It is easier to teach brighter students than those below average."],
+    answer: 0,
+    explanation: "High starters progressed less while low starters progressed more, so early promise doesn't guarantee long-term achievement."
+  },
+  {
+    topic: "Identifying Flaws", difficulty: 3,
+    text: "Over the past ten years there has been a four-fold increase in the number of people killed in road accidents who are found to have illegal drugs in their bodies. This rate of increase is much greater than the corresponding rate for those killed with alcohol in their blood. This shows that the campaign against drink-driving has succeeded. Consequently, the Government ought now to concentrate on targeting those who drive under the influence of illegal drugs.\n\nWhich of the following is the best statement of the flaw?",
+    options: ["Those who take illegal drugs and drive are likely different from those who drink and drive.","Targeting drug drivers ignores people who take drugs but do not drive.","The success of the drink-driving campaign does not mean a drug campaign would succeed.","The increase in drug-related road deaths is insufficient to conclude the drink-driving campaign succeeded.","Evidence needs to distinguish between illegal and legal drugs."],
+    answer: 3,
+    explanation: "The argument uses the rise in drug deaths as evidence the drink-driving campaign worked — these are separate trends; one does not prove the other."
+  },
+  {
+    topic: "Parallel Reasoning", difficulty: 3,
+    text: "If you arrive late for work, you will definitely get fired. You lost your last job, so you must have arrived late for work.\n\nWhich one of the following most closely parallels the reasoning above?",
+    options: ["If you turn up the volume, the music gets louder. The music is very loud now, which means you turned up the volume.","If a company wants to be successful, it must insist on punctuality. This company does not, so it will not be successful.","Disciplinary action is taken against all workers who do not wear a helmet. None has been taken against Mike, so he must have always worn one.","You need a membership card to use the gym. You do not have one, so you cannot use the gym.","To anger a hippo, it is enough to drive close with a boat. They are driving close to this one, so it will become angry."],
+    answer: 0,
+    explanation: "The original commits the fallacy of affirming the consequent (fired ⇒ was late). Option A repeats it: loud ⇒ you turned it up."
+  },
+  {
+    topic: "Applying Principles", difficulty: 3,
+    text: "A right is not an excuse. The fact that you have a right to do something cannot count as justification for doing it. I may have a right to walk behind someone mimicking their walk, but that does not mean I ought to. When deciding how to act, it isn't really rights we should turn to, but morals. You should not ask: do I have a right to do this? Instead ask: is it right that I should do this?\n\nWhich one of the following best illustrates the principle used above?",
+    options: ["A person who fails to carry out a friend's dying wishes because the request seems morally wrong has still failed their moral duty.","A person who drives dangerously and hurts someone is morally blameworthy even with no intention to do so.","A person who rejoices at a colleague's hard time is behaving badly, even if that colleague had harmed them.","A person who upsets someone by criticising their appearance cannot defend the action on grounds of freedom of speech.","A person who listens to their heart rather than their head in a dilemma will not make the right decision."],
+    answer: 3,
+    explanation: "The principle is that having a right doesn't justify an act. D shows free speech (a right) failing to justify hurtful criticism."
+  },
+  {
+    topic: "Identifying Assumptions", difficulty: 3,
+    text: "The past couple of decades have been tricky for many countries, the UK among them. But life there is getting better, according to the World Happiness Report. The project scores quality of life in over 150 countries on factors such as life expectancy, social support, personal freedoms and absence of corruption. In the latest Report, the UK rose from 15th to 13th place. While still beneath Finland, the UK has definitely become happier.\n\nWhich one of the following is an underlying assumption of the argument?",
+    options: ["The UK made changes in direct response to previous Reports.","It is rare for a country to move up two places in one year.","The Report is designed to show happiness is not largely dependent on economic factors.","The UK's movement in the rankings was not solely due to a fall in happiness in other countries.","The happiness levels in Finland are achievable in most other countries."],
+    answer: 3,
+    explanation: "To conclude the UK 'became happier', one must assume its rise wasn't caused merely by other countries falling in the rankings."
   }
 ];
 
 const MA_QUESTIONS = [
   {
-    topic: "Problem Solving",
-    text: "A child's bus fare is cheaper than the adult fare but is more than half the adult fare. The total cost of a single journey for an adult and two children is £1.20. Adult fares are all multiples of 10p.\n\nWhat is the adult fare?",
-    options: ["30p","40p","50p","60p","70p"],
-    answer: 2,
-    explanation: "If adult = 50p, child must be between 25p and 50p. Try child = 35p: 50 + 35 + 35 = 120p = £1.20 ✓. No other adult fare satisfies all conditions."
-  },
-  {
-    topic: "Numerical Reasoning",
-    text: "A train travels from City A to City B at 80 km/h and returns at 120 km/h. What is the average speed for the entire round trip?",
-    options: ["100 km/h","96 km/h","95 km/h","98 km/h","90 km/h"],
-    answer: 1,
-    explanation: "For equal distances use harmonic mean: 2 × (80 × 120) / (80 + 120) = 19200 / 200 = 96 km/h."
-  },
-  {
-    topic: "Spatial Reasoning",
+    topic: "Spatial Reasoning", difficulty: 1,
     text: "A cube has a total surface area of 54 cm². What is the volume of the cube?",
     options: ["9 cm³","27 cm³","18 cm³","36 cm³","54 cm³"],
     answer: 1,
     explanation: "Surface area = 6s² = 54, so s² = 9, s = 3 cm. Volume = s³ = 27 cm³."
   },
   {
-    topic: "Data Interpretation",
+    topic: "Data Interpretation", difficulty: 1,
     text: "In a class of 30 students, 18 play football, 12 play basketball, and 6 play both sports. How many students play neither sport?",
     options: ["6","8","4","10","12"],
     answer: 0,
     explanation: "By inclusion-exclusion: 18 + 12 − 6 = 24 play at least one sport. 30 − 24 = 6 play neither."
   },
   {
-    topic: "Algebra",
+    topic: "Algebra", difficulty: 1,
     text: "If 3x + 7 = 22, what is the value of 2x − 1?",
     options: ["7","9","5","10","8"],
     answer: 1,
     explanation: "3x = 15, so x = 5. Then 2x − 1 = 10 − 1 = 9."
+  },
+  {
+    topic: "Numerical Reasoning", difficulty: 2,
+    text: "A train travels from City A to City B at 80 km/h and returns at 120 km/h. What is the average speed for the entire round trip?",
+    options: ["100 km/h","96 km/h","95 km/h","98 km/h","90 km/h"],
+    answer: 1,
+    explanation: "For equal distances use the harmonic mean: 2 × (80 × 120) / (80 + 120) = 19200 / 200 = 96 km/h."
+  },
+  {
+    topic: "Problem Solving", difficulty: 2,
+    text: "Jack must buy 30 litres of lemonade. Four brands all normally cost $2.75 for a 2-litre bottle, but each has a different offer this week:\n• Fordowne: $2 off when three 2-litre bottles are purchased\n• Imp: 20% off all 2-litre bottles\n• Swish: buy four 2-litre bottles, get another one free\n• Tiara: 2.5 litres for the normal price of 2 litres\n\nWhich brand keeps the cost as low as possible?",
+    options: ["Fordowne","Imp","Swish","Tiara"],
+    answer: 0,
+    explanation: "For 30 L: Fordowne 15×2.75 − 5×2 = $31.25, cheaper than Imp, Swish and Tiara (all $33)."
+  },
+  {
+    topic: "Problem Solving", difficulty: 2,
+    text: "A factory produces 200 tin cans every hour. Powering and maintaining the machinery costs $20 per hour. The 15 employees each earn $4 per hour. Raw materials for 50 cans cost $15. The manager prices cans by adding all costs together and then adding 50%.\n\nWhat price should each can be sold for?",
+    options: ["$0.60","$0.70","$1.05","$1.20","$1.35"],
+    answer: 2,
+    explanation: "Hourly cost = $20 + 15×$4 + 4×$15 = $140 for 200 cans. Adding 50% gives $210, i.e. $1.05 per can."
+  },
+  {
+    topic: "Optimisation", difficulty: 2,
+    text: "Mr Spencer must transport 40 boxes 50 miles, spending as little on petrol as possible. He can fit 8 boxes in his car (return trip costs $14), 15 boxes in the school mini-bus (return $23), or 18 boxes in his friend's van (return $28).\n\nWhat is the lowest cost of transporting all 40 boxes?",
+    options: ["$56","$60","$65","$69","$70"],
+    answer: 2,
+    explanation: "Van (18) + mini-bus (15) + car (8) = 41 boxes for $28 + $23 + $14 = $65 — the cheapest valid combination."
+  },
+  {
+    topic: "Problem Solving", difficulty: 2,
+    text: "A quiz has 40 questions. Each correct answer scores 2 points; 1 point is deducted for each wrong answer; unattempted questions score nothing. The winning team scored 57 points. The runners-up scored 54, despite having 2 more correct answers than the winners.\n\nHow many wrong answers did the runners-up have?",
+    options: ["6","7","8","9"],
+    answer: 2,
+    explanation: "Winner: 2c − w = 57. Runners-up have c+2 correct: 2(c+2) − w₂ = 54. Solving with whole numbers gives w₂ = 8."
+  },
+  {
+    topic: "Problem Solving", difficulty: 3,
+    text: "A child's bus fare is cheaper than the adult fare but more than half of it. The total cost of a single journey for an adult and two children is £1.20. Adult fares are all multiples of 10p.\n\nWhat is the adult fare?",
+    options: ["30p","40p","50p","60p","70p"],
+    answer: 2,
+    explanation: "If adult = 50p, the child fare must be between 25p and 50p. Child = 35p gives 50 + 35 + 35 = 120p ✓. No other adult fare fits."
+  },
+  {
+    topic: "Number Puzzles", difficulty: 3,
+    text: "A taxi driver notices that his 5-digit licence number can be read upside down and still forms a 5-digit number. Read upside down, the number is 87984 less than the actual licence number.\n\nWhat is the actual taxi licence number?",
+    options: ["89061","89110","96180","98106","99109"],
+    answer: 2,
+    explanation: "Rotated 180°, 96180 reads as 8196 (9↔6, others unchanged, order reversed). 96180 − 8196 = 87984. ✓"
+  },
+  {
+    topic: "Numerical Reasoning", difficulty: 3,
+    text: "Iman and Maya ran a 100 metre race. Iman started 2 seconds after Maya and finished 3 seconds before her. Each ran at constant speed, and Iman's speed was 25% faster than Maya's.\n\nFor how many seconds did Iman run?",
+    options: ["15 seconds","18 seconds","20 seconds","22 seconds","25 seconds"],
+    answer: 2,
+    explanation: "Let Maya's speed v. Iman's time = 100/(1.25v) = 80/v; Maya's = 100/v. Iman starts 2s later and ends 3s earlier ⇒ 100/v − 80/v = 5 ⇒ v = 4. Iman ran 80/4 = 20 s."
+  },
+  {
+    topic: "Logic Puzzles", difficulty: 3,
+    text: "Six sacks each hold one kind of fruit: apples, oranges or limes. Their weights are 8, 13, 17, 18, 22 and 24 kg. The total weight of all the apples is twice the total weight of all the limes, and there is only one sack of oranges.\n\nWhat is the weight of the sack of oranges?",
+    options: ["24 kg","17 kg","18 kg","22 kg","13 kg"],
+    answer: 0,
+    explanation: "Total is 102. Apples = 2×limes, so apples + limes is divisible by 3 ⇒ oranges ≡ 0 (mod 3). Only 24 works: limes 8+18 = 26, apples 13+17+22 = 52 = 2×26."
   }
 ];
 
-let questions = [], current = 0, score = 0, answered = false, results = [];
+/* ---------- настройки движка ---------- */
+const QUIZ_LENGTH   = 8;    // вопросов в одной попытке
+const START_ABILITY = 2.0;  // стартовый уровень ученика (середина 1..3)
+const STEP          = 0.5;  // шаг изменения уровня после ответа
+
+/* ---------- состояние ---------- */
+let pool = [], asked = [], current = 0;
+let score = 0, answered = false, results = [];
+let ability = START_ABILITY, perTopic = {};
 let userName = '', section = 'CT';
+
+const DIFF_LABEL = { 1: 'Easy', 2: 'Medium', 3: 'Hard' };
 
 function selectSection(s) {
   section = s;
@@ -720,35 +836,50 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 
+function quizLen() { return Math.min(QUIZ_LENGTH, pool.length); }
+
+/* выбрать следующий вопрос: ближайший по сложности к уровню ученика */
+function pickNext() {
+  const remaining = pool.filter(q => !asked.includes(q));
+  if (!remaining.length) return null;
+  let best = [], bestDist = Infinity;
+  remaining.forEach(q => {
+    const d = Math.abs(q.difficulty - ability);
+    if (d < bestDist - 1e-9) { bestDist = d; best = [q]; }
+    else if (Math.abs(d - bestDist) < 1e-9) best.push(q);
+  });
+  return best[Math.floor(Math.random() * best.length)];
+}
+
 function startQuiz() {
   userName = document.getElementById('user-name').value.trim() || 'Student';
-  questions = section === 'CT' ? [...CT_QUESTIONS] : [...MA_QUESTIONS];
-  current = 0; score = 0; answered = false; results = [];
+  pool = section === 'CT' ? [...CT_QUESTIONS] : [...MA_QUESTIONS];
+  asked = []; current = 0; score = 0; answered = false; results = [];
+  ability = START_ABILITY; perTopic = {};
   document.getElementById('q-section-pill').textContent = section === 'CT' ? 'Critical Thinking' : 'Mathematics';
   document.getElementById('nav-score').textContent = '';
+  asked.push(pickNext());
   showScreen('quiz-screen');
   renderQuestion();
 }
 
 function renderQuestion() {
-  const q = questions[current];
+  const q = asked[current];
   answered = false;
-  const total = questions.length;
+  const total = quizLen();
 
   document.getElementById('prog-fill').style.width = `${(current / total) * 100}%`;
   document.getElementById('q-count').textContent = `${current + 1} / ${total}`;
-  document.getElementById('topic-badge').textContent = q.topic;
+  document.getElementById('topic-badge').textContent = `${q.topic} · ${DIFF_LABEL[q.difficulty]}`;
   document.getElementById('q-text').textContent = q.text;
   document.getElementById('btn-next').style.display = 'none';
 
   const fb = document.getElementById('feedback');
-  fb.className = 'feedback';
-  fb.textContent = '';
+  fb.className = 'feedback'; fb.textContent = '';
 
   const opts = document.getElementById('options');
   opts.innerHTML = '';
   const letters = ['A','B','C','D','E'];
-
   q.options.forEach((opt, i) => {
     const btn = document.createElement('button');
     btn.className = 'opt';
@@ -761,48 +892,57 @@ function renderQuestion() {
 function selectOpt(idx) {
   if (answered) return;
   answered = true;
-  const q = questions[current];
+  const q = asked[current];
   const opts = document.querySelectorAll('.opt');
   const fb = document.getElementById('feedback');
-
   opts.forEach(o => o.classList.add('disabled'));
   opts[idx].classList.add('selected');
 
-  if (idx === q.answer) {
+  const correct = idx === q.answer;
+  if (!perTopic[q.topic]) perTopic[q.topic] = { correct: 0, total: 0 };
+  perTopic[q.topic].total++;
+
+  if (correct) {
     score++;
+    perTopic[q.topic].correct++;
     opts[idx].classList.add('correct');
     fb.className = 'feedback fb-correct show';
     fb.textContent = '✓ Correct. ' + q.explanation;
+    ability = Math.min(3.2, ability + STEP);   // дальше вопросы сложнее
     results.push({ correct: true });
   } else {
     opts[idx].classList.add('wrong');
     opts[q.answer].classList.add('correct');
     fb.className = 'feedback fb-wrong show';
     fb.textContent = '✗ Incorrect. ' + q.explanation;
+    ability = Math.max(0.8, ability - STEP);   // дальше вопросы легче
     results.push({ correct: false });
   }
 
   const nb = document.getElementById('btn-next');
   nb.style.display = 'inline-flex';
-  nb.textContent = current === questions.length - 1 ? 'See Results →' : 'Next →';
+  nb.textContent = current === quizLen() - 1 ? 'See Results →' : 'Next →';
 }
 
 function nextQuestion() {
+  if (current >= quizLen() - 1) { showResults(); return; }
+  const nq = pickNext();
+  if (!nq) { showResults(); return; }
+  asked.push(nq);
   current++;
-  if (current >= questions.length) showResults();
-  else renderQuestion();
+  renderQuestion();
 }
 
 async function showResults() {
   document.getElementById('prog-fill').style.width = '100%';
-  const total = questions.length;
-  const pct   = score / total;
+  const total = asked.length;
+  const pct = total ? score / total : 0;
 
   try {
-    const token   = localStorage.getItem('senu_token');
+    const token = localStorage.getItem('senu_token');
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
-    const res  = await fetch('http://localhost:8000/submit', {
+    const res = await fetch('http://localhost:8000/submit', {
       method: 'POST', headers,
       body: JSON.stringify({ name: userName, score, total, section })
     });
@@ -812,7 +952,6 @@ async function showResults() {
         const ptsEl = document.getElementById('nav-pts');
         ptsEl.textContent = `+${data.points_earned} pts earned`;
         ptsEl.style.display = '';
-        // обновить локальный кэш очков
         const user = JSON.parse(localStorage.getItem('senu_user') || 'null');
         if (user && data.total_points != null) {
           user.points = data.total_points;
@@ -820,11 +959,10 @@ async function showResults() {
         }
       }
     }
-  } catch(e) {}
+  } catch (e) {}
 
   showScreen('result-screen');
 
-  /* Три столба в пропорции 1 : φ : φ² от результата */
   setTimeout(() => {
     document.getElementById('rp1').style.height = Math.max(6, Math.round(pct * 33)) + '%';
     document.getElementById('rp2').style.height = Math.max(6, Math.round(pct * 66)) + '%';
@@ -832,43 +970,76 @@ async function showResults() {
   }, 120);
 
   document.getElementById('res-score').textContent = `${score}/${total}`;
-  document.getElementById('res-of').textContent    = `out of ${total} · ${Math.round(pct * 100)}%`;
+  document.getElementById('res-of').textContent = `out of ${total} · ${Math.round(pct * 100)}%`;
   document.getElementById('nav-score').textContent = `${score}/${total}`;
 
-  let title, msg;
-  if      (pct === 1)   { title = 'Perfect score!';   msg = 'Outstanding. You have mastered this section.'; }
-  else if (pct >= 0.8)  { title = 'Strong result';    msg = 'You\'re close to top performance. Review any missed questions carefully.'; }
-  else if (pct >= 0.6)  { title = 'Good progress';    msg = 'Solid foundation. Focus on the topics where you slipped.'; }
-  else if (pct >= 0.4)  { title = 'Keep practising';  msg = 'NUET takes practice. Read the explanations and try again.'; }
-  else                  { title = 'More work needed'; msg = 'Don\'t worry — study the explanations and revisit the section.'; }
+  let level;
+  if (ability >= 2.5) level = 'Advanced';
+  else if (ability >= 1.7) level = 'Intermediate';
+  else level = 'Foundational';
 
+  let title, msg;
+  if (pct === 1)      { title = 'Perfect score!';   msg = 'Outstanding — you handled the hardest questions we threw at you.'; }
+  else if (pct >= 0.8){ title = 'Strong result';    msg = "You're close to top performance. Review any missed questions carefully."; }
+  else if (pct >= 0.6){ title = 'Good progress';    msg = 'Solid foundation. Focus on the weak topics below.'; }
+  else if (pct >= 0.4){ title = 'Keep practising';  msg = 'NUET takes practice. Read the explanations and try again.'; }
+  else                { title = 'More work needed'; msg = "Don't worry — study the explanations and revisit the section."; }
   document.getElementById('res-title').textContent = title;
-  document.getElementById('res-msg').textContent   = msg;
+  document.getElementById('res-msg').textContent = msg;
+
+  const weak = Object.entries(perTopic)
+    .map(([t, s]) => ({ topic: t, acc: s.correct / s.total }))
+    .filter(x => x.acc < 0.6)
+    .sort((a, b) => a.acc - b.acc)
+    .slice(0, 3)
+    .map(x => x.topic);
 
   const bd = document.getElementById('breakdown');
-  bd.innerHTML = '<div class="bd-title">Question Breakdown</div>';
+  bd.innerHTML = '<div class="bd-title">Your Insights</div>';
+
+  const lvlRow = document.createElement('div');
+  lvlRow.className = 'bd-row';
+  lvlRow.innerHTML = `<span>📈 Estimated level: <b>${level}</b></span>`;
+  bd.appendChild(lvlRow);
+
+  const focusRow = document.createElement('div');
+  focusRow.className = 'bd-row';
+  focusRow.innerHTML = weak.length
+    ? `<span>🎯 Focus on: <b>${weak.join(', ')}</b></span>`
+    : `<span>🎯 No weak areas — nicely balanced!</span>`;
+  bd.appendChild(focusRow);
+
+  const sep = document.createElement('div');
+  sep.className = 'bd-title';
+  sep.style.marginTop = '16px';
+  sep.textContent = 'Question Breakdown';
+  bd.appendChild(sep);
+
   results.forEach((r, i) => {
     const row = document.createElement('div');
     row.className = 'bd-row';
-    row.innerHTML = `<span class="bd-dot ${r.correct ? 'c' : 'w'}"></span><span>Question ${i+1} — ${r.correct ? 'Correct' : 'Incorrect'}</span>`;
+    row.innerHTML = `<span class="bd-dot ${r.correct ? 'c' : 'w'}"></span><span>Question ${i + 1} — ${r.correct ? 'Correct' : 'Incorrect'} · ${DIFF_LABEL[asked[i].difficulty]}</span>`;
     bd.appendChild(row);
   });
 }
 
 function retryQuiz() { startQuiz(); }
 
-// Показать имя/очки пользователя в навбаре если залогинен
+/* стартовый экран: число вопросов + данные залогиненного пользователя */
 (function () {
+  const mv = document.querySelector('.start-meta .meta-val');
+  if (mv) mv.textContent = QUIZ_LENGTH;
+
   const user = JSON.parse(localStorage.getItem('senu_user') || 'null');
   if (user) {
     const ptsEl = document.getElementById('nav-pts');
     ptsEl.textContent = `⭐ ${user.points} pts`;
     ptsEl.style.display = '';
-    // Подставить имя в поле name
     const nameInput = document.getElementById('user-name');
     if (nameInput && !nameInput.value) nameInput.value = user.username;
   }
 })();
+
 </script>
 </body>
 </html>
