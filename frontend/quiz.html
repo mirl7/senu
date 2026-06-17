@@ -642,7 +642,9 @@
    В коде страницы правильных ответов больше НЕТ.
 ============================================================ */
 
-const API = 'http://localhost:8000';
+const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:')
+  ? 'http://localhost:8000'
+  : 'https://senu-api.onrender.com';
 const QUIZ_LENGTH   = 8;
 const START_ABILITY = 2.0;
 const STEP          = 0.5;
