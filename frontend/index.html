@@ -19,19 +19,18 @@
       --border:  #e8e0cc;
       --radius:  14px;
       --font:    'Geist', sans-serif;
-      --phi3:    4.236s;
     }
 
     html { scroll-behavior: smooth; }
     body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; }
 
-    /* ══ LOGO BARS ══ */
-    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text); }
+    /* ══ LOGO ══ */
+    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; }
     .logo-bars { display: flex; align-items: flex-end; gap: 0; height: 22px; }
     .lb { width: 6px; transform-origin: bottom center; }
-    .lb1 { height: 7px;  background: var(--gold-33); border: 1.5px solid rgba(253,195,95,0.55); animation: bar-rise var(--phi3) ease-in-out infinite 0s; }
-    .lb2 { height: 13px; background: var(--gold-66); border: 1.5px solid rgba(253,195,95,0.82); animation: bar-rise var(--phi3) ease-in-out infinite 0.382s; }
-    .lb3 { height: 22px; background: var(--gold); animation: bar-rise var(--phi3) ease-in-out infinite 0.764s; }
+    .lb1 { height: 7px;  background: var(--gold-33); border: 1.5px solid rgba(253,195,95,0.55); animation: bar-rise 4.236s ease-in-out infinite 0s; }
+    .lb2 { height: 13px; background: var(--gold-66); border: 1.5px solid rgba(253,195,95,0.82); animation: bar-rise 4.236s ease-in-out infinite 0.382s; }
+    .lb3 { height: 22px; background: var(--gold); animation: bar-rise 4.236s ease-in-out infinite 0.764s; }
 
     @keyframes bar-rise {
       0%   { transform: scaleY(0); opacity: 0; }
@@ -48,23 +47,33 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       height: 58px; padding: 0 48px;
       display: flex; align-items: center; justify-content: space-between;
-      background: rgba(255,254,249,0.82);
+      background: rgba(0,0,0,0.35);
       backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      border-bottom: 1px solid rgba(232,224,204,0.55);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: #fff;
+    }
+    nav.scrolled {
+      background: rgba(255,254,249,0.88);
+      border-bottom-color: rgba(232,224,204,0.55);
+      color: var(--text);
     }
 
     .nav-links { display: flex; align-items: center; gap: 30px; list-style: none; }
-    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--muted); text-decoration: none; transition: color .2s; }
-    .nav-links a:hover { color: var(--text); }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: rgba(255,255,255,0.55); text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: #fff; }
+    nav.scrolled .nav-links a { color: var(--muted); }
+    nav.scrolled .nav-links a:hover { color: var(--text); }
 
     .nav-right { display: flex; align-items: center; gap: 8px; }
 
     .btn-ghost {
       font-family: var(--font); font-size: 0.875rem; font-weight: 500;
-      color: var(--muted); background: none; border: none; cursor: pointer;
-      padding: 6px 12px; border-radius: 8px; transition: color .2s, background .15s;
+      color: rgba(255,255,255,0.55); background: none; border: none; cursor: pointer;
+      padding: 6px 12px; border-radius: 8px; transition: color .2s;
     }
-    .btn-ghost:hover { color: var(--text); background: var(--bg-2); }
+    .btn-ghost:hover { color: #fff; }
+    nav.scrolled .btn-ghost { color: var(--muted); }
+    nav.scrolled .btn-ghost:hover { color: var(--text); }
 
     .btn-gold-sm {
       font-family: var(--font); font-size: 0.875rem; font-weight: 600;
@@ -75,35 +84,38 @@
     }
     .btn-gold-sm:hover { opacity: 0.88; transform: translateY(-1px); }
 
-    .nav-username { font-size: 0.875rem; font-weight: 600; color: var(--text); }
+    .nav-username { font-size: 0.875rem; font-weight: 600; }
     .nav-points {
       font-size: 0.8rem; font-weight: 500; color: #9a6c10;
       background: rgba(253,195,95,0.16); border: 1px solid rgba(253,195,95,0.38);
       padding: 4px 11px; border-radius: 999px;
     }
     .btn-logout {
-      font-family: var(--font); font-size: 0.8rem; color: var(--muted);
-      background: none; border: 1.5px solid var(--border); border-radius: 999px;
+      font-family: var(--font); font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      background: none; border: 1.5px solid rgba(255,255,255,0.15); border-radius: 999px;
       padding: 5px 13px; cursor: pointer; transition: border-color .2s, color .2s;
     }
-    .btn-logout:hover { border-color: var(--gold); color: var(--text); }
+    .btn-logout:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+    nav.scrolled .btn-logout { color: var(--muted); border-color: var(--border); }
+    nav.scrolled .btn-logout:hover { color: var(--text); border-color: var(--gold); }
 
-    /* ══ HERO ══ */
+    /* ══ HERO (dark + beams) ══ */
     .hero {
       position: relative;
       height: 100vh; min-height: 640px;
       display: flex; align-items: center; justify-content: center;
-      overflow: hidden; background: var(--bg);
+      overflow: hidden; background: #000;
     }
 
-    #rays-canvas {
+    #beams-bg {
       position: absolute; inset: 0;
-      width: 100%; height: 100%;
       pointer-events: none;
     }
+    #beams-bg canvas { display: block; }
 
     .hero-inner {
-      position: relative; z-index: 1;
+      position: relative; z-index: 2;
       text-align: center; padding: 0 24px;
       max-width: 700px;
     }
@@ -112,19 +124,19 @@
       display: inline-block;
       font-size: 0.68rem; font-weight: 600;
       letter-spacing: 0.18em; text-transform: uppercase;
-      color: #9a6c10;
-      background: rgba(253,195,95,0.16); border: 1px solid rgba(253,195,95,0.4);
+      color: var(--gold);
+      background: rgba(253,195,95,0.08); border: 1px solid rgba(253,195,95,0.2);
       padding: 5px 14px; border-radius: 999px; margin-bottom: 30px;
     }
 
     .hero h1 {
       font-size: clamp(3rem, 7vw, 5.5rem);
       font-weight: 700; line-height: 1.04; letter-spacing: -0.03em;
-      margin-bottom: 20px;
+      color: #fff; margin-bottom: 20px;
     }
 
     .hero-sub {
-      font-size: 1.05rem; color: var(--muted); line-height: 1.72;
+      font-size: 1.05rem; color: rgba(255,255,255,0.45); line-height: 1.72;
       max-width: 460px; margin: 0 auto 40px;
     }
 
@@ -140,31 +152,32 @@
     }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(253,195,95,0.5); }
 
-    .btn-outline {
+    .btn-outline-light {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 13px 24px;
-      background: transparent; color: var(--muted);
+      background: transparent; color: rgba(255,255,255,0.5);
       font-family: var(--font); font-size: 0.95rem; font-weight: 500;
-      border: 1.5px solid var(--border); border-radius: 999px; cursor: pointer; text-decoration: none;
+      border: 1.5px solid rgba(255,255,255,0.15); border-radius: 999px;
+      cursor: pointer; text-decoration: none;
       transition: border-color .2s, color .2s;
     }
-    .btn-outline:hover { border-color: var(--gold); color: var(--text); }
+    .btn-outline-light:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
 
     .scroll-hint {
       position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
-      z-index: 1; text-decoration: none;
+      z-index: 2; text-decoration: none;
       display: flex; flex-direction: column; align-items: center; gap: 5px;
-      color: var(--muted); font-size: 0.68rem; font-weight: 500;
+      color: rgba(255,255,255,0.3); font-size: 0.68rem; font-weight: 500;
       letter-spacing: 0.1em; text-transform: uppercase;
       animation: bob 2.2s ease-in-out infinite;
     }
     .scroll-hint svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
     @keyframes bob {
-      0%,100% { transform: translateX(-50%) translateY(0);  opacity: 0.55; }
-      50%      { transform: translateX(-50%) translateY(7px); opacity: 0.9; }
+      0%,100% { transform: translateX(-50%) translateY(0);  opacity: 0.4; }
+      50%      { transform: translateX(-50%) translateY(7px); opacity: 0.8; }
     }
 
-    /* ══ MOCK TESTS ══ */
+    /* ══ SECTIONS (light) ══ */
     .section { max-width: 1080px; margin: 0 auto; padding: 88px 48px; }
 
     .sec-label {
@@ -179,6 +192,7 @@
     }
     .sec-sub { font-size: 1rem; color: var(--muted); line-height: 1.7; max-width: 460px; margin-bottom: 44px; }
 
+    /* ══ MOCK TESTS ══ */
     .tests-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 
     .test-card {
@@ -194,21 +208,25 @@
       color: #166534; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
       padding: 3px 10px; border-radius: 999px;
     }
-
-    .test-num {
-      font-size: 2.6rem; font-weight: 700; color: rgba(253,195,95,0.38);
-      line-height: 1; margin-bottom: 14px;
-    }
-
+    .test-num { font-size: 2.6rem; font-weight: 700; color: rgba(253,195,95,0.38); line-height: 1; margin-bottom: 14px; }
     .test-meta {
       display: inline-block; font-size: 0.68rem; font-weight: 500;
       letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
       background: var(--bg-2); border: 1px solid var(--border);
       padding: 3px 10px; border-radius: 999px; margin-bottom: 12px;
     }
-
     .test-card h3 { font-size: 1.08rem; font-weight: 700; margin-bottom: 7px; }
     .test-card p  { font-size: 0.87rem; color: var(--muted); line-height: 1.65; margin-bottom: 22px; }
+
+    .btn-start-sm {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 10px 20px;
+      background: var(--gold); color: var(--text);
+      font-family: var(--font); font-size: 0.86rem; font-weight: 600;
+      border: none; border-radius: 999px; cursor: pointer; text-decoration: none;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-start-sm:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(253,195,95,0.45); }
 
     /* ══ FEATURES STRIP ══ */
     .strip { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-2); }
@@ -222,7 +240,6 @@
     }
     .feat-item:first-child { padding-left: 0; }
     .feat-item:last-child  { border-right: none; }
-
     .feat-icon {
       width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center; font-size: 1rem;
@@ -230,7 +247,6 @@
     .fi1 { background: var(--gold-33); }
     .fi2 { background: var(--gold-66); }
     .fi3 { background: var(--gold); }
-
     .feat-label { font-size: 0.88rem; font-weight: 600; }
     .feat-desc  { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
 
@@ -247,7 +263,7 @@
     /* ══ AUTH MODAL ══ */
     .modal-overlay {
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.36); backdrop-filter: blur(6px);
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(6px);
       z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px;
       opacity: 0; pointer-events: none; transition: opacity .2s;
     }
@@ -306,34 +322,12 @@
       .feat-item:last-child { border-bottom: none; padding-bottom: 0; }
       footer { padding: 18px 20px; flex-direction: column; gap: 10px; text-align: center; }
     }
-
-
-    :root {
-  --bg:     #0d0c0a;
-  --bg-2:   #16140f;
-  --text:   #f4efe4;
-  --muted:  #a39b8c;
-  --border: #2a261f;
-}
-nav         { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255,255,0.06); }
-.test-card  { background: #15130f; }
-.test-card:hover { box-shadow: 0 10px 36px rgba(0,0,0,0.55); }
-.modal-box      { background: #16140f; }
-.modal-overlay  { background: rgba(0,0,0,0.6); }
-/* текст на золотых кнопках оставляем тёмным, иначе сольётся */
-.btn-primary, .btn-gold-sm, .modal-submit { color: #181510; }
-/* акцентный текст делаем ярче, чтобы читался на тёмном */
-.sec-label, .hero-tag, .nav-points { color: #f0c674; }
-.test-free   { color: #6ee7a0; }
-.modal-error { color: #fca5a5; }
-
-
   </style>
 </head>
 <body>
 
 <!-- ═══ NAV ═══ -->
-<nav>
+<nav id="main-nav">
   <a href="index.html" class="logo">
     <div class="logo-bars">
       <div class="lb lb1"></div>
@@ -342,12 +336,10 @@ nav         { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255
     </div>
     <span class="logo-name">SENU</span>
   </a>
-
   <ul class="nav-links">
     <li><a href="#tests">Mock Tests</a></li>
     <li><a href="quiz.html">Practice</a></li>
   </ul>
-
   <div class="nav-right" id="nav-right">
     <button class="btn-ghost" onclick="openModal('login')">Log in</button>
     <button class="btn-gold-sm" onclick="openModal('register')">Sign up →</button>
@@ -356,7 +348,7 @@ nav         { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255
 
 <!-- ═══ HERO ═══ -->
 <section class="hero">
-  <canvas id="rays-canvas"></canvas>
+  <div id="beams-bg"></div>
 
   <div class="hero-inner">
     <div class="hero-tag">NUET · Adaptive Exam Prep</div>
@@ -364,7 +356,7 @@ nav         { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255
     <p class="hero-sub">Adaptive Critical Thinking &amp; Mathematics practice that adjusts to your level — so you improve exactly where it counts.</p>
     <div class="hero-cta">
       <a href="quiz.html" class="btn-primary">Start Free Practice →</a>
-      <a href="#tests" class="btn-outline">Mock Tests ↓</a>
+      <a href="#tests" class="btn-outline-light">Mock Tests ↓</a>
     </div>
   </div>
 
@@ -379,7 +371,6 @@ nav         { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255
     <div class="sec-label">Free Mock Exams</div>
     <h2 class="sec-title">Mock Tests</h2>
     <p class="sec-sub">Full-length NUET-style exams. Complete all questions and see your detailed score breakdown.</p>
-
     <div class="tests-grid">
       <div class="test-card">
         <span class="test-free">Free</span>
@@ -387,7 +378,7 @@ nav         { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255
         <span class="test-meta">CT · MA · 5 questions</span>
         <h3>Mock Test 1</h3>
         <p>Standard difficulty. Core NUET argument types and foundational maths.</p>
-        <a href="quiz.html" class="btn-primary" style="font-size:0.86rem;padding:10px 20px">Start →</a>
+        <a href="quiz.html" class="btn-start-sm">Start →</a>
       </div>
       <div class="test-card">
         <span class="test-free">Free</span>
@@ -395,7 +386,7 @@ nav         { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255
         <span class="test-meta">CT · MA · 5 questions</span>
         <h3>Mock Test 2</h3>
         <p>Intermediate level. Increases complexity in both CT and MA sections.</p>
-        <a href="quiz.html" class="btn-primary" style="font-size:0.86rem;padding:10px 20px">Start →</a>
+        <a href="quiz.html" class="btn-start-sm">Start →</a>
       </div>
       <div class="test-card">
         <span class="test-free">Free</span>
@@ -403,7 +394,7 @@ nav         { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255
         <span class="test-meta">CT · MA · 5 questions</span>
         <h3>Mock Test 3</h3>
         <p>Advanced difficulty. Closest to real NUET exam conditions and depth.</p>
-        <a href="quiz.html" class="btn-primary" style="font-size:0.86rem;padding:10px 20px">Start →</a>
+        <a href="quiz.html" class="btn-start-sm">Start →</a>
       </div>
     </div>
   </div>
@@ -414,24 +405,15 @@ nav         { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255
   <div class="strip-inner">
     <div class="feat-item">
       <div class="feat-icon fi1">🧠</div>
-      <div>
-        <div class="feat-label">Adaptive Testing</div>
-        <div class="feat-desc">IRT algorithm adjusts difficulty in real time</div>
-      </div>
+      <div><div class="feat-label">Adaptive Testing</div><div class="feat-desc">IRT algorithm adjusts difficulty in real time</div></div>
     </div>
     <div class="feat-item">
       <div class="feat-icon fi2">📊</div>
-      <div>
-        <div class="feat-label">Progress Tracking</div>
-        <div class="feat-desc">History, score trends, weak topic analysis</div>
-      </div>
+      <div><div class="feat-label">Progress Tracking</div><div class="feat-desc">History, score trends, weak topic analysis</div></div>
     </div>
     <div class="feat-item">
       <div class="feat-icon fi3">📚</div>
-      <div>
-        <div class="feat-label">500+ Questions</div>
-        <div class="feat-desc">Every question with a detailed explanation</div>
-      </div>
+      <div><div class="feat-label">500+ Questions</div><div class="feat-desc">Every question with a detailed explanation</div></div>
     </div>
   </div>
 </div>
@@ -474,166 +456,225 @@ nav         { background: rgba(13,12,10,0.72); border-bottom-color: rgba(255,255
   </div>
 </div>
 
+<!-- Three.js -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.min.js"></script>
+
 <script>
 /* ══════════════════════════════════════════════
-   WEBGL SIDE RAYS  (ported from SideRays.jsx)
-   Шейдер идентичен оригиналу, OGL заменён
-   ванильным WebGL + один full-screen triangle.
+   THREE.JS BEAMS  (ported from Beams.jsx)
 ══════════════════════════════════════════════ */
 (function () {
-  const canvas = document.getElementById('rays-canvas');
-  const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false });
-  if (!gl) return;
+  const container = document.getElementById('beams-bg');
+  if (!container) return;
 
-  gl.enable(gl.BLEND);
-  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  /* ── noise GLSL (same as original) ── */
+  const NOISE_GLSL = `
+float random2d(in vec2 st){return fract(sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123);}
+float noise2d(in vec2 st){
+  vec2 i=floor(st);vec2 f=fract(st);
+  float a=random2d(i);float b=random2d(i+vec2(1.,0.));
+  float c=random2d(i+vec2(0.,1.));float d=random2d(i+vec2(1.,1.));
+  vec2 u=f*f*(3.-2.*f);
+  return mix(a,b,u.x)+(c-a)*u.y*(1.-u.x)+(d-b)*u.x*u.y;
+}
+vec4 permute4(vec4 x){return mod(((x*34.0)+1.0)*x,289.0);}
+vec4 taylorInvSqrt4(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+vec3 fade3(vec3 t){return t*t*t*(t*(t*6.-15.)+10.);}
+float cnoise(vec3 P){
+  vec3 Pi0=floor(P);vec3 Pi1=Pi0+vec3(1.);Pi0=mod(Pi0,289.);Pi1=mod(Pi1,289.);
+  vec3 Pf0=fract(P);vec3 Pf1=Pf0-vec3(1.);
+  vec4 ix=vec4(Pi0.x,Pi1.x,Pi0.x,Pi1.x);vec4 iy=vec4(Pi0.yy,Pi1.yy);
+  vec4 iz0=Pi0.zzzz;vec4 iz1=Pi1.zzzz;
+  vec4 ixy=permute4(permute4(ix)+iy);vec4 ixy0=permute4(ixy+iz0);vec4 ixy1=permute4(ixy+iz1);
+  vec4 gx0=ixy0/7.;vec4 gy0=fract(floor(gx0)/7.)-0.5;gx0=fract(gx0);
+  vec4 gz0=vec4(0.5)-abs(gx0)-abs(gy0);vec4 sz0=step(gz0,vec4(0.));
+  gx0-=sz0*(step(0.,gx0)-0.5);gy0-=sz0*(step(0.,gy0)-0.5);
+  vec4 gx1=ixy1/7.;vec4 gy1=fract(floor(gx1)/7.)-0.5;gx1=fract(gx1);
+  vec4 gz1=vec4(0.5)-abs(gx1)-abs(gy1);vec4 sz1=step(gz1,vec4(0.));
+  gx1-=sz1*(step(0.,gx1)-0.5);gy1-=sz1*(step(0.,gy1)-0.5);
+  vec3 g000=vec3(gx0.x,gy0.x,gz0.x);vec3 g100=vec3(gx0.y,gy0.y,gz0.y);
+  vec3 g010=vec3(gx0.z,gy0.z,gz0.z);vec3 g110=vec3(gx0.w,gy0.w,gz0.w);
+  vec3 g001=vec3(gx1.x,gy1.x,gz1.x);vec3 g101=vec3(gx1.y,gy1.y,gz1.y);
+  vec3 g011=vec3(gx1.z,gy1.z,gz1.z);vec3 g111=vec3(gx1.w,gy1.w,gz1.w);
+  vec4 norm0=taylorInvSqrt4(vec4(dot(g000,g000),dot(g010,g010),dot(g100,g100),dot(g110,g110)));
+  g000*=norm0.x;g010*=norm0.y;g100*=norm0.z;g110*=norm0.w;
+  vec4 norm1=taylorInvSqrt4(vec4(dot(g001,g001),dot(g011,g011),dot(g101,g101),dot(g111,g111)));
+  g001*=norm1.x;g011*=norm1.y;g101*=norm1.z;g111*=norm1.w;
+  float n000=dot(g000,Pf0);float n100=dot(g100,vec3(Pf1.x,Pf0.yz));
+  float n010=dot(g010,vec3(Pf0.x,Pf1.y,Pf0.z));float n110=dot(g110,vec3(Pf1.xy,Pf0.z));
+  float n001=dot(g001,vec3(Pf0.xy,Pf1.z));float n101=dot(g101,vec3(Pf1.x,Pf0.y,Pf1.z));
+  float n011=dot(g011,vec3(Pf0.x,Pf1.yz));float n111=dot(g111,Pf1);
+  vec3 fade_xyz=fade3(Pf0);
+  vec4 n_z=mix(vec4(n000,n100,n010,n110),vec4(n001,n101,n011,n111),fade_xyz.z);
+  vec2 n_yz=mix(n_z.xy,n_z.zw,fade_xyz.y);
+  return 2.2*mix(n_yz.x,n_yz.y,fade_xyz.x);
+}`;
 
-  const VERT = `
-    attribute vec2 pos;
-    void main() { gl_Position = vec4(pos, 0.0, 1.0); }`;
+  /* ── config ── */
+  const BEAM_COUNT = 12, BEAM_W = 2, BEAM_H = 15, HEIGHT_SEG = 100;
+  const SPEED = 2, NOISE_SCALE = 0.2, NOISE_INT = 1.75;
+  const LIGHT_COL = '#fdc35f';
 
-  const FRAG = `
-    precision highp float;
-    uniform float iTime;
-    uniform vec2  iRes;
-    uniform float iSpeed;
-    uniform vec3  iCol1;
-    uniform vec3  iCol2;
-    uniform float iIntensity;
-    uniform float iSpread;
-    uniform float iTilt;
-    uniform float iSat;
-    uniform float iBlend;
-    uniform float iFalloff;
-    uniform float iOpacity;
+  /* ── scene ── */
+  const scene    = new THREE.Scene();
+  scene.background = new THREE.Color('#000000');
 
-    float rayStrength(vec2 src, vec2 dir, vec2 coord, float sA, float sB, float spd) {
-      vec2 d = coord - src;
-      float c = dot(normalize(d), dir);
-      return clamp(
-        (0.45 + 0.15 * sin(c * sA + iTime * spd)) +
-        (0.30 + 0.20 * cos(-c * sB + iTime * spd)),
-        0.0, 1.0) *
-        clamp((iRes.x - length(d)) / iRes.x, 0.5, 1.0);
+  const camera   = new THREE.PerspectiveCamera(30, container.offsetWidth / container.offsetHeight, 0.1, 100);
+  camera.position.set(0, 0, 20);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(container.offsetWidth, container.offsetHeight);
+  container.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 1));
+  const dirLight = new THREE.DirectionalLight(LIGHT_COL, 1);
+  dirLight.position.set(0, 3, 10);
+  scene.add(dirLight);
+
+  /* ── stacked planes geometry ── */
+  function buildGeometry(n, w, h, seg) {
+    const geo  = new THREE.BufferGeometry();
+    const vNum = n * (seg + 1) * 2;
+    const fNum = n * seg * 2;
+    const pos  = new Float32Array(vNum * 3);
+    const uv   = new Float32Array(vNum * 2);
+    const idx  = new Uint32Array(fNum * 3);
+    let vi = 0, ui = 0, ii = 0;
+    const totalW = n * w;
+    const xBase  = -totalW / 2;
+    for (let i = 0; i < n; i++) {
+      const xOff  = xBase + i * w;
+      const uvX   = Math.random() * 300;
+      const uvY   = Math.random() * 300;
+      for (let j = 0; j <= seg; j++) {
+        const y = h * (j / seg - 0.5);
+        pos[vi * 3]     = xOff;      pos[vi * 3 + 1] = y; pos[vi * 3 + 2] = 0;
+        pos[vi * 3 + 3] = xOff + w;  pos[vi * 3 + 4] = y; pos[vi * 3 + 5] = 0;
+        const uvV = j / seg;
+        uv[ui]     = uvX;     uv[ui + 1] = uvV + uvY;
+        uv[ui + 2] = uvX + 1; uv[ui + 3] = uvV + uvY;
+        if (j < seg) {
+          idx[ii] = vi; idx[ii+1] = vi+1; idx[ii+2] = vi+2;
+          idx[ii+3] = vi+2; idx[ii+4] = vi+1; idx[ii+5] = vi+3;
+          ii += 6;
+        }
+        vi += 2; ui += 4;
+      }
     }
-
-    void main() {
-      vec2 fc    = gl_FragCoord.xy;
-      vec2 coord = vec2(fc.x, iRes.y - fc.y);
-      vec2 src   = vec2(iRes.x * 1.1, -0.5 * iRes.y);
-
-      float tr  = iTilt * 3.14159265 / 180.0;
-      vec2  rel = coord - src;
-      vec2  tc  = vec2(rel.x * cos(tr) - rel.y * sin(tr),
-                       rel.x * sin(tr) + rel.y * cos(tr)) + src;
-
-      float hs = iSpread * 0.275;
-      vec2 d1 = normalize(vec2(cos(0.785398 + hs), sin(0.785398 + hs)));
-      vec2 d2 = normalize(vec2(cos(0.785398 - hs), sin(0.785398 - hs)));
-
-      vec4 r1  = vec4(iCol1, 1.0) * rayStrength(src, d1, tc, 36.2214, 21.11349, iSpeed);
-      vec4 r2  = vec4(iCol2, 1.0) * rayStrength(src, d2, tc, 22.3991, 18.0234,  iSpeed * 0.2);
-      vec4 col = r1 * (1.0 - iBlend) * 0.9 + r2 * iBlend * 0.9;
-
-      float dist = length(fc - vec2(src.x, iRes.y - src.y)) / iRes.y;
-      float brt  = iIntensity * 0.4 / pow(max(dist, 0.001), iFalloff);
-      col.rgb *= brt;
-
-      float gray = dot(col.rgb, vec3(0.299, 0.587, 0.114));
-      col.rgb = mix(vec3(gray), col.rgb, iSat);
-
-      col.a = max(col.r, max(col.g, col.b)) * iOpacity;
-      gl_FragColor = col;
-    }`;
-
-  function mkShader(type, src) {
-    const s = gl.createShader(type);
-    gl.shaderSource(s, src);
-    gl.compileShader(s);
-    return s;
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+    geo.setIndex(new THREE.BufferAttribute(idx, 1));
+    geo.computeVertexNormals();
+    return geo;
   }
 
-  const prog = gl.createProgram();
-  gl.attachShader(prog, mkShader(gl.VERTEX_SHADER, VERT));
-  gl.attachShader(prog, mkShader(gl.FRAGMENT_SHADER, FRAG));
-  gl.linkProgram(prog);
-  gl.useProgram(prog);
+  /* ── custom material (extends MeshStandardMaterial) ── */
+  const mat = new THREE.MeshStandardMaterial({
+    color: 0x000000,
+    roughness: 0.3,
+    metalness: 0.3,
+    envMapIntensity: 10,
+  });
 
-  // Один большой треугольник покрывающий весь экран (как Triangle в OGL)
-  const vbo = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
-  const posLoc = gl.getAttribLocation(prog, 'pos');
-  gl.enableVertexAttribArray(posLoc);
-  gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+  let shaderRef = null;
 
-  const U = {};
-  ['iTime','iRes','iSpeed','iCol1','iCol2','iIntensity','iSpread','iTilt','iSat','iBlend','iFalloff','iOpacity']
-    .forEach(n => { U[n] = gl.getUniformLocation(prog, n); });
+  mat.onBeforeCompile = function (shader) {
+    shader.uniforms.time           = { value: 0 };
+    shader.uniforms.uSpeed         = { value: SPEED };
+    shader.uniforms.uScale         = { value: NOISE_SCALE };
+    shader.uniforms.uNoiseIntensity = { value: NOISE_INT };
 
-  function hexRgb(h) {
-    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h);
-    return m ? [parseInt(m[1],16)/255, parseInt(m[2],16)/255, parseInt(m[3],16)/255] : [1,1,1];
-  }
+    const header = `
+      uniform float time;
+      uniform float uSpeed;
+      uniform float uScale;
+      uniform float uNoiseIntensity;
+      ${NOISE_GLSL}
+    `;
 
-  gl.uniform1f(U.iSpeed,     1.5);
-  gl.uniform3fv(U.iCol1,     hexRgb('#fdc35f'));  // gold
-  gl.uniform3fv(U.iCol2,     hexRgb('#f5d98a'));  // light gold
-  gl.uniform1f(U.iIntensity, 2.2);
-  gl.uniform1f(U.iSpread,    2.5);
-  gl.uniform1f(U.iTilt,      0);
-  gl.uniform1f(U.iSat,       1.2);
-  gl.uniform1f(U.iBlend,     0.55);
-  gl.uniform1f(U.iFalloff,   1.75);
-  gl.uniform1f(U.iOpacity,   0.6);
+    const vertHelpers = `
+      float getPos(vec3 p){
+        vec3 np=vec3(p.x*0.,p.y-uv.y,p.z+time*uSpeed*3.)*uScale;
+        return cnoise(np);
+      }
+      vec3 getCurrentPos(vec3 p){vec3 n=p;n.z+=getPos(p);return n;}
+      vec3 getNormal2(vec3 p){
+        vec3 c=getCurrentPos(p);
+        vec3 nx=getCurrentPos(p+vec3(0.01,0.,0.));
+        vec3 nz=getCurrentPos(p+vec3(0.,-0.01,0.));
+        return normalize(cross(normalize(nz-c),normalize(nx-c)));
+      }
+    `;
 
-  function resize() {
-    const dpr = Math.min(devicePixelRatio, 2);
-    const w = canvas.offsetWidth  * dpr;
-    const h = canvas.offsetHeight * dpr;
-    if (canvas.width !== w || canvas.height !== h) {
-      canvas.width = w; canvas.height = h;
-      gl.viewport(0, 0, w, h);
-    }
-    gl.uniform2f(U.iRes, canvas.width, canvas.height);
-  }
-  window.addEventListener('resize', resize);
-  resize();
+    shader.vertexShader = header + vertHelpers + shader.vertexShader;
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <begin_vertex>',
+      '#include <begin_vertex>\ntransformed.z += getPos(transformed.xyz);'
+    );
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <beginnormal_vertex>',
+      '#include <beginnormal_vertex>\nobjectNormal = getNormal2(position.xyz);'
+    );
 
-  function animate(t) {
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.uniform1f(U.iTime, t * 0.001);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    shader.fragmentShader = header + shader.fragmentShader;
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <dithering_fragment>',
+      `#include <dithering_fragment>
+       float rn = noise2d(gl_FragCoord.xy);
+       gl_FragColor.rgb -= rn / 15.0 * uNoiseIntensity;`
+    );
+
+    shaderRef = shader;
+  };
+
+  const mesh = new THREE.Mesh(buildGeometry(BEAM_COUNT, BEAM_W, BEAM_H, HEIGHT_SEG), mat);
+  scene.add(mesh);
+
+  /* ── loop ── */
+  const clock = new THREE.Clock();
+  function animate() {
+    if (shaderRef) shaderRef.uniforms.time.value += 0.1 * clock.getDelta();
+    renderer.render(scene, camera);
     requestAnimationFrame(animate);
   }
-  requestAnimationFrame(animate);
+  animate();
+
+  /* ── resize ── */
+  window.addEventListener('resize', () => {
+    const w = container.offsetWidth, h = container.offsetHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  });
+})();
+
+/* ══════════════════════════════════════════════
+   NAV SCROLL — light/dark switch
+══════════════════════════════════════════════ */
+(function () {
+  const nav  = document.getElementById('main-nav');
+  const hero = document.querySelector('.hero');
+  if (!nav || !hero) return;
+  const observer = new IntersectionObserver(
+    ([e]) => { nav.classList.toggle('scrolled', !e.isIntersecting); },
+    { threshold: 0.05 }
+  );
+  observer.observe(hero);
 })();
 
 /* ══════════════════════════════════════════════
    AUTH
 ══════════════════════════════════════════════ */
 const API = 'http://localhost:8000';
-
 function getToken() { return localStorage.getItem('senu_token'); }
 function getUser()  { return JSON.parse(localStorage.getItem('senu_user') || 'null'); }
+function setSession(t, u) { localStorage.setItem('senu_token', t); localStorage.setItem('senu_user', JSON.stringify(u)); updateNav(); }
+function clearSession()   { localStorage.removeItem('senu_token'); localStorage.removeItem('senu_user'); updateNav(); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function setSession(token, user) {
-  localStorage.setItem('senu_token', token);
-  localStorage.setItem('senu_user', JSON.stringify(user));
-  updateNav();
-}
-function clearSession() {
-  localStorage.removeItem('senu_token');
-  localStorage.removeItem('senu_user');
-  updateNav();
-}
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
 function updateNav() {
-  const user = getUser();
-  const nr = document.getElementById('nav-right');
+  const user = getUser(), nr = document.getElementById('nav-right');
   if (!nr) return;
   if (user) {
     nr.innerHTML =
@@ -646,66 +687,45 @@ function updateNav() {
       `<button class="btn-gold-sm" onclick="openModal('register')">Sign up →</button>`;
   }
 }
-function openModal(tab) {
-  document.getElementById('auth-modal').classList.add('open');
-  switchTab(tab || 'login');
+function openModal(t) { document.getElementById('auth-modal').classList.add('open'); switchTab(t||'login'); }
+function closeModal()  { document.getElementById('auth-modal').classList.remove('open'); }
+function switchTab(t) {
+  document.getElementById('tab-login').classList.toggle('active', t==='login');
+  document.getElementById('tab-register').classList.toggle('active', t==='register');
+  document.getElementById('form-login').style.display    = t==='login'    ? '' : 'none';
+  document.getElementById('form-register').style.display = t==='register' ? '' : 'none';
 }
-function closeModal() { document.getElementById('auth-modal').classList.remove('open'); }
-function switchTab(tab) {
-  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
-  document.getElementById('form-login').style.display    = tab === 'login'    ? '' : 'none';
-  document.getElementById('form-register').style.display = tab === 'register' ? '' : 'none';
-}
-document.getElementById('auth-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('auth-modal')) closeModal();
-});
+document.getElementById('auth-modal').addEventListener('click', e => { if (e.target===document.getElementById('auth-modal')) closeModal(); });
+
 async function doLogin() {
-  const email    = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value;
-  const errEl    = document.getElementById('login-error');
-  errEl.classList.remove('show');
+  const email=document.getElementById('login-email').value.trim(), pw=document.getElementById('login-password').value;
+  const err=document.getElementById('login-error'); err.classList.remove('show');
   try {
-    const res  = await fetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
-    const data = await res.json();
-    if (!res.ok) { errEl.textContent = data.detail || 'Login failed'; errEl.classList.add('show'); return; }
-    setSession(data.token, { username: data.username, points: data.points });
-    closeModal();
-  } catch {
-    errEl.textContent = 'Connection error — is the server running?';
-    errEl.classList.add('show');
-  }
+    const r=await fetch(`${API}/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
+    const d=await r.json();
+    if(!r.ok){err.textContent=d.detail||'Login failed';err.classList.add('show');return;}
+    setSession(d.token,{username:d.username,points:d.points}); closeModal();
+  } catch{err.textContent='Connection error — is the server running?';err.classList.add('show');}
 }
 async function doRegister() {
-  const username = document.getElementById('reg-username').value.trim();
-  const email    = document.getElementById('reg-email').value.trim();
-  const password = document.getElementById('reg-password').value;
-  const errEl    = document.getElementById('register-error');
-  errEl.classList.remove('show');
-  if (!username) { errEl.textContent = 'Username is required'; errEl.classList.add('show'); return; }
+  const un=document.getElementById('reg-username').value.trim(),em=document.getElementById('reg-email').value.trim(),pw=document.getElementById('reg-password').value;
+  const err=document.getElementById('register-error'); err.classList.remove('show');
+  if(!un){err.textContent='Username is required';err.classList.add('show');return;}
   try {
-    const res  = await fetch(`${API}/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username, email, password }) });
-    const data = await res.json();
-    if (!res.ok) { errEl.textContent = data.detail || 'Registration failed'; errEl.classList.add('show'); return; }
-    const lr = await fetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
-    const ld = await lr.json();
-    if (lr.ok) { setSession(ld.token, { username: ld.username, points: ld.points }); closeModal(); }
-    else switchTab('login');
-  } catch {
-    errEl.textContent = 'Connection error — is the server running?';
-    errEl.classList.add('show');
-  }
+    const r=await fetch(`${API}/register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:un,email:em,password:pw})});
+    const d=await r.json();
+    if(!r.ok){err.textContent=d.detail||'Registration failed';err.classList.add('show');return;}
+    const lr=await fetch(`${API}/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,password:pw})});
+    const ld=await lr.json();
+    if(lr.ok){setSession(ld.token,{username:ld.username,points:ld.points});closeModal();}else switchTab('login');
+  } catch{err.textContent='Connection error — is the server running?';err.classList.add('show');}
 }
 async function doLogout() {
-  const token = getToken();
-  if (token) {
-    try { await fetch(`${API}/logout`, { method:'POST', headers:{'Authorization':`Bearer ${token}`} }); } catch {}
-  }
+  const t=getToken();
+  if(t){try{await fetch(`${API}/logout`,{method:'POST',headers:{'Authorization':`Bearer ${t}`}});}catch{}}
   clearSession();
 }
-
 updateNav();
 </script>
-
 </body>
 </html>
