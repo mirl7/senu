@@ -6,7 +6,7 @@
   <title>SENU — Practice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -22,7 +22,7 @@
       --green:   #22c55e;
       --red:     #ef4444;
       --radius:  14px;
-      --tnr:     'Inter', sans-serif;
+      --tnr:     'Space Grotesk', sans-serif;
       --phi3:    4.236s;
     }
 
@@ -58,9 +58,10 @@
     }
 
     .logo-name {
-      font-family: var(--tnr);
-      font-size: 1.3rem;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 1.5rem;
       font-weight: 700;
+      text-transform: lowercase;
     }
 
     /* ══ NAV ══ */
@@ -521,6 +522,31 @@
       .quiz-card-body { padding: 24px 18px 18px; }
       .quiz-card-head, .quiz-card-foot { padding: 16px 18px; }
       .result-card { padding: 36px 24px; }
+    }
+
+    /* ════════ DARK THEME (matches index.html black palette) ════════ */
+    :root {
+      --bg:     #080705;
+      --bg-2:   #121110;
+      --text:   #f4efe4;
+      --muted:  #8a8278;
+      --border: #232019;
+    }
+    nav { background: rgba(8,7,5,0.72); border-bottom-color: rgba(255,255,255,0.06); }
+    .start-card, .quiz-card, .result-card { background: #121110; }
+    /* текст на золотых кнопках держим тёмным */
+    .btn-start, .btn-next, .btn-retry { color: #161310; }
+    .opt.selected .opt-letter { color: #161310; }
+    /* золотистые подписи ярче на чёрном */
+    .q-pill, .start-tag, .nav-pts-pill, .sect-btn.active { color: #f0c674; }
+    .feedback.fb-correct { color: #6ee7a0; }
+    .feedback.fb-wrong   { color: #fca5a5; }
+    /* ТЕКСТ ЗАДАНИЙ — Times New Roman, белый, как экзаменационный билет */
+    .question-text {
+      font-family: 'Times New Roman', Times, serif;
+      color: var(--text);
+      font-size: 1.08rem;
+      line-height: 1.82;
     }
   </style>
 </head>

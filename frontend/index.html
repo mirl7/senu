@@ -3,342 +3,291 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SENU — Adaptive NUET Exam Prep</title>
-  <link href="https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-sans/style.css" rel="stylesheet">
+  <title>SENU — Adaptive NUET Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --gold:    #fdc35f;
-      --gold-33: rgba(253,195,95,0.33);
-      --gold-66: rgba(253,195,95,0.66);
-      --bg:      #fffef9;
-      --bg-2:    #faf7f0;
-      --text:    #1c1a15;
-      --muted:   #6b6560;
-      --border:  #e8e0cc;
-      --radius:  14px;
-      --font:    'Geist', sans-serif;
+      --gold-33: rgba(253,195,95,0.30);
+      --gold-66: rgba(253,195,95,0.62);
+      --gold-soft: rgba(253,195,95,0.12);
+      --bg:      #080705;
+      --panel:   #121110;
+      --text:    #f4efe4;
+      --muted:   #8a8278;
+      --border:  #232019;
+      --green:   #6ee7a0;
+      --radius:  16px;
+      --font:    'Space Grotesk', system-ui, sans-serif;
     }
 
     html { scroll-behavior: smooth; }
-    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; }
-
-    /* ══ LOGO ══ */
-    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; }
-    .logo-bars { display: flex; align-items: flex-end; gap: 0; height: 22px; }
-    .lb { width: 6px; transform-origin: bottom center; }
-    .lb1 { height: 7px;  background: var(--gold-33); border: 1.5px solid rgba(253,195,95,0.55); animation: bar-rise 4.236s ease-in-out infinite 0s; }
-    .lb2 { height: 13px; background: var(--gold-66); border: 1.5px solid rgba(253,195,95,0.82); animation: bar-rise 4.236s ease-in-out infinite 0.382s; }
-    .lb3 { height: 22px; background: var(--gold); animation: bar-rise 4.236s ease-in-out infinite 0.764s; }
-
-    @keyframes bar-rise {
-      0%   { transform: scaleY(0); opacity: 0; }
-      18%  { transform: scaleY(1); opacity: 1; }
-      62%  { transform: scaleY(1); opacity: 1; }
-      80%  { transform: scaleY(0); opacity: 0; }
-      100% { transform: scaleY(0); opacity: 0; }
-    }
-
-    .logo-name { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; }
-
-    /* ══ NAV ══ */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      height: 58px; padding: 0 48px;
-      display: flex; align-items: center; justify-content: space-between;
-      background: rgba(0,0,0,0.35);
-      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      color: #fff;
-    }
-    nav.scrolled {
-      background: rgba(255,254,249,0.88);
-      border-bottom-color: rgba(232,224,204,0.55);
+    body {
+      font-family: var(--font);
+      background: var(--bg);
       color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .nav-links { display: flex; align-items: center; gap: 30px; list-style: none; }
-    .nav-links a { font-size: 0.875rem; font-weight: 500; color: rgba(255,255,255,0.55); text-decoration: none; transition: color .2s; }
-    .nav-links a:hover { color: #fff; }
-    nav.scrolled .nav-links a { color: var(--muted); }
-    nav.scrolled .nav-links a:hover { color: var(--text); }
+    /* ═══════════════ INTRO OVERLAY ═══════════════ */
+    #intro {
+      position: fixed; inset: 0; z-index: 2000;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 22px;
+      transition: transform .7s cubic-bezier(.76,0,.24,1), opacity .5s ease;
+      cursor: pointer;
+    }
+    #intro.done { transform: translateY(-100%); opacity: 0; pointer-events: none; }
 
+    .intro-bars { display: flex; align-items: flex-end; gap: 4px; height: 84px; }
+    .intro-bar { width: 22px; transform-origin: bottom center; border-radius: 3px 3px 1px 1px; }
+    .ib1 { height: 30px; background: var(--gold-33); border: 1.5px solid rgba(253,195,95,0.5); }
+    .ib2 { height: 54px; background: var(--gold-66); border: 1.5px solid rgba(253,195,95,0.8); }
+    .ib3 { height: 84px; background: var(--gold); }
+
+    .intro-word {
+      display: flex; gap: 0;
+      font-family: 'Times New Roman', Times, serif;
+      text-transform: lowercase;
+      font-size: clamp(3.6rem, 12vw, 7rem);
+      font-weight: 700; letter-spacing: 0; line-height: 1;
+    }
+    .intro-word span { display: inline-block; }
+
+    .intro-sub {
+      font-size: 0.72rem; font-weight: 500;
+      letter-spacing: 0.32em; text-transform: uppercase; color: var(--muted);
+    }
+    .intro-skip {
+      position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
+      font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #4b463e;
+    }
+
+    /* ═══════════════ NAV ═══════════════ */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      height: 60px; padding: 0 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(8,7,5,0.72);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo { display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--text); }
+    .logo-bars { display: flex; align-items: flex-end; gap: 1.5px; height: 22px; }
+    .lb { width: 6px; transform-origin: bottom center; }
+    .lb1 { height: 8px;  background: var(--gold-33); border: 1.5px solid rgba(253,195,95,0.5); animation: bar-rise 4.2s ease-in-out infinite 0s; }
+    .lb2 { height: 14px; background: var(--gold-66); border: 1.5px solid rgba(253,195,95,0.8); animation: bar-rise 4.2s ease-in-out infinite 0.382s; }
+    .lb3 { height: 22px; background: var(--gold); animation: bar-rise 4.2s ease-in-out infinite 0.764s; }
+    @keyframes bar-rise {
+      0% { transform: scaleY(0); opacity: 0; } 18% { transform: scaleY(1); opacity: 1; }
+      62% { transform: scaleY(1); opacity: 1; } 80%,100% { transform: scaleY(0); opacity: 0; }
+    }
+    .logo-name { font-family: 'Times New Roman', Times, serif; font-size: 1.45rem; font-weight: 700; letter-spacing: 0; text-transform: lowercase; }
+
+    .nav-links { display: flex; align-items: center; gap: 26px; list-style: none; }
+    .nav-links a { font-size: 0.85rem; font-weight: 500; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
     .nav-right { display: flex; align-items: center; gap: 8px; }
 
     .btn-ghost {
-      font-family: var(--font); font-size: 0.875rem; font-weight: 500;
-      color: rgba(255,255,255,0.55); background: none; border: none; cursor: pointer;
+      font-family: var(--font); font-size: 0.85rem; font-weight: 500;
+      color: var(--muted); background: none; border: none; cursor: pointer;
       padding: 6px 12px; border-radius: 8px; transition: color .2s;
     }
-    .btn-ghost:hover { color: #fff; }
-    nav.scrolled .btn-ghost { color: var(--muted); }
-    nav.scrolled .btn-ghost:hover { color: var(--text); }
-
+    .btn-ghost:hover { color: var(--text); }
     .btn-gold-sm {
-      font-family: var(--font); font-size: 0.875rem; font-weight: 600;
-      color: var(--text); background: var(--gold);
+      font-family: var(--font); font-size: 0.85rem; font-weight: 600;
+      color: #161310; background: var(--gold);
       border: none; border-radius: 999px; cursor: pointer;
-      padding: 8px 18px; text-decoration: none;
-      transition: opacity .2s, transform .15s;
+      padding: 8px 18px; text-decoration: none; transition: opacity .2s, transform .15s;
     }
-    .btn-gold-sm:hover { opacity: 0.88; transform: translateY(-1px); }
-
-    .nav-username { font-size: 0.875rem; font-weight: 600; }
+    .btn-gold-sm:hover { opacity: 0.9; transform: translateY(-1px); }
+    .nav-username { font-size: 0.85rem; font-weight: 600; }
     .nav-points {
-      font-size: 0.8rem; font-weight: 500; color: #9a6c10;
-      background: rgba(253,195,95,0.16); border: 1px solid rgba(253,195,95,0.38);
+      font-size: 0.78rem; font-weight: 500; color: var(--gold);
+      background: var(--gold-soft); border: 1px solid rgba(253,195,95,0.3);
       padding: 4px 11px; border-radius: 999px;
     }
     .btn-logout {
-      font-family: var(--font); font-size: 0.8rem;
-      color: rgba(255,255,255,0.5);
-      background: none; border: 1.5px solid rgba(255,255,255,0.15); border-radius: 999px;
+      font-family: var(--font); font-size: 0.78rem; color: var(--muted);
+      background: none; border: 1.5px solid var(--border); border-radius: 999px;
       padding: 5px 13px; cursor: pointer; transition: border-color .2s, color .2s;
     }
-    .btn-logout:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
-    nav.scrolled .btn-logout { color: var(--muted); border-color: var(--border); }
-    nav.scrolled .btn-logout:hover { color: var(--text); border-color: var(--gold); }
+    .btn-logout:hover { border-color: var(--gold); color: var(--text); }
 
-    /* ══ HERO (dark + beams) ══ */
-    .hero {
-      position: relative;
-      height: 100vh; min-height: 640px;
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden; background: #000;
+    /* ═══════════════ SECTIONS ═══════════════ */
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 64px 40px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
     }
+    .eyebrow::before { content: ''; width: 22px; height: 1px; background: var(--gold); opacity: 0.6; }
+    .sec-title { font-size: clamp(1.7rem, 3.4vw, 2.4rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.12; }
+    .sec-sub { font-size: 1rem; color: var(--muted); max-width: 440px; margin-top: 10px; }
 
-    #beams-bg {
-      position: absolute; inset: 0;
-      pointer-events: none;
-    }
-    #beams-bg canvas { display: block; }
+    /* first section pulls up under the sticky nav with a little breathing room */
+    #tests .wrap { padding-top: 56px; }
 
-    .hero-inner {
-      position: relative; z-index: 2;
-      text-align: center; padding: 0 24px;
-      max-width: 700px;
-    }
-
-    .hero-tag {
-      display: inline-block;
-      font-size: 0.68rem; font-weight: 600;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--gold);
-      background: rgba(253,195,95,0.08); border: 1px solid rgba(253,195,95,0.2);
-      padding: 5px 14px; border-radius: 999px; margin-bottom: 30px;
-    }
-
-    .hero h1 {
-      font-size: clamp(3rem, 7vw, 5.5rem);
-      font-weight: 700; line-height: 1.04; letter-spacing: -0.03em;
-      color: #fff; margin-bottom: 20px;
-    }
-
-    .hero-sub {
-      font-size: 1.05rem; color: rgba(255,255,255,0.45); line-height: 1.72;
-      max-width: 460px; margin: 0 auto 40px;
-    }
-
-    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-
-    .btn-primary {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 13px 26px;
-      background: var(--gold); color: var(--text);
-      font-family: var(--font); font-size: 0.95rem; font-weight: 600;
-      border: none; border-radius: 999px; cursor: pointer; text-decoration: none;
-      transition: transform .15s, box-shadow .15s;
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(253,195,95,0.5); }
-
-    .btn-outline-light {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 13px 24px;
-      background: transparent; color: rgba(255,255,255,0.5);
-      font-family: var(--font); font-size: 0.95rem; font-weight: 500;
-      border: 1.5px solid rgba(255,255,255,0.15); border-radius: 999px;
-      cursor: pointer; text-decoration: none;
-      transition: border-color .2s, color .2s;
-    }
-    .btn-outline-light:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
-
-    .scroll-hint {
-      position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
-      z-index: 2; text-decoration: none;
-      display: flex; flex-direction: column; align-items: center; gap: 5px;
-      color: rgba(255,255,255,0.3); font-size: 0.68rem; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      animation: bob 2.2s ease-in-out infinite;
-    }
-    .scroll-hint svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
-    @keyframes bob {
-      0%,100% { transform: translateX(-50%) translateY(0);  opacity: 0.4; }
-      50%      { transform: translateX(-50%) translateY(7px); opacity: 0.8; }
-    }
-
-    /* ══ SECTIONS (light) ══ */
-    .section { max-width: 1080px; margin: 0 auto; padding: 88px 48px; }
-
-    .sec-label {
-      display: inline-block;
-      font-size: 0.68rem; font-weight: 600;
-      letter-spacing: 0.16em; text-transform: uppercase; color: #9a6c10;
-      margin-bottom: 10px;
-    }
-    .sec-title {
-      font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700;
-      letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 10px;
-    }
-    .sec-sub { font-size: 1rem; color: var(--muted); line-height: 1.7; max-width: 460px; margin-bottom: 44px; }
-
-    /* ══ MOCK TESTS ══ */
-    .tests-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-
+    /* ═══════════════ MOCK TESTS ═══════════════ */
+    .tests-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
     .test-card {
-      background: white; border: 1px solid var(--border); border-radius: 20px;
-      padding: 30px 26px; position: relative;
-      transition: transform .2s, box-shadow .2s;
+      background: var(--panel); border: 1px solid var(--border); border-radius: 20px;
+      padding: 28px 24px; position: relative; overflow: hidden;
+      transition: transform .2s, border-color .2s;
     }
-    .test-card:hover { transform: translateY(-3px); box-shadow: 0 10px 36px rgba(0,0,0,0.07); }
-
+    .test-card::before {
+      content: ''; position: absolute; inset: 0 0 auto 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-66), transparent);
+      opacity: 0; transition: opacity .25s;
+    }
+    .test-card:hover { transform: translateY(-3px); border-color: rgba(253,195,95,0.35); }
+    .test-card:hover::before { opacity: 1; }
     .test-free {
-      position: absolute; top: 18px; right: 18px;
-      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-      color: #166534; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
+      position: absolute; top: 16px; right: 16px;
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--green); background: rgba(34,197,94,0.1); border: 1px solid rgba(110,231,160,0.25);
       padding: 3px 10px; border-radius: 999px;
     }
-    .test-num { font-size: 2.6rem; font-weight: 700; color: rgba(253,195,95,0.38); line-height: 1; margin-bottom: 14px; }
+    .test-num {
+      font-size: 2.4rem; font-weight: 700; line-height: 1; margin-bottom: 14px;
+      color: transparent; -webkit-text-stroke: 1.5px rgba(253,195,95,0.4);
+    }
     .test-meta {
-      display: inline-block; font-size: 0.68rem; font-weight: 500;
+      display: inline-block; font-size: 0.66rem; font-weight: 500;
       letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
-      background: var(--bg-2); border: 1px solid var(--border);
+      background: var(--bg); border: 1px solid var(--border);
       padding: 3px 10px; border-radius: 999px; margin-bottom: 12px;
     }
-    .test-card h3 { font-size: 1.08rem; font-weight: 700; margin-bottom: 7px; }
-    .test-card p  { font-size: 0.87rem; color: var(--muted); line-height: 1.65; margin-bottom: 22px; }
-
+    .test-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 7px; }
+    .test-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 22px; }
     .btn-start-sm {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 10px 20px;
-      background: var(--gold); color: var(--text);
-      font-family: var(--font); font-size: 0.86rem; font-weight: 600;
-      border: none; border-radius: 999px; cursor: pointer; text-decoration: none;
-      transition: transform .15s, box-shadow .15s;
+      display: inline-flex; align-items: center; gap: 5px; padding: 10px 20px;
+      background: var(--gold); color: #161310; font-family: var(--font);
+      font-size: 0.84rem; font-weight: 600; border: none; border-radius: 999px;
+      cursor: pointer; text-decoration: none; transition: transform .15s, box-shadow .15s;
     }
-    .btn-start-sm:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(253,195,95,0.45); }
+    .btn-start-sm:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(253,195,95,0.35); }
 
-    /* ══ FEATURES STRIP ══ */
-    .strip { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-2); }
-    .strip-inner {
-      max-width: 1080px; margin: 0 auto; padding: 36px 48px;
-      display: grid; grid-template-columns: repeat(3, 1fr);
+    /* ═══════════════ PROGRESS / ANALYTICS ═══════════════ */
+    #progress { border-top: 1px solid var(--border); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 40px; }
+    .stat {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 16px;
+      padding: 26px 22px;
     }
-    .feat-item {
-      display: flex; align-items: center; gap: 13px;
-      padding: 0 28px; border-right: 1px solid var(--border);
+    .stat-val {
+      font-size: 2.4rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1;
+      font-variant-numeric: tabular-nums;
     }
-    .feat-item:first-child { padding-left: 0; }
-    .feat-item:last-child  { border-right: none; }
-    .feat-icon {
-      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 1rem;
-    }
-    .fi1 { background: var(--gold-33); }
-    .fi2 { background: var(--gold-66); }
-    .fi3 { background: var(--gold); }
-    .feat-label { font-size: 0.88rem; font-weight: 600; }
-    .feat-desc  { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+    .stat-lbl { margin-top: 8px; font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 
-    /* ══ FOOTER ══ */
+    .you-card {
+      margin-top: 16px; background: linear-gradient(120deg, var(--gold-soft), transparent 60%);
+      border: 1px solid rgba(253,195,95,0.28); border-radius: 18px;
+      padding: 24px 26px; display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;
+    }
+    .you-card .yc-text { font-size: 0.95rem; }
+    .you-card .yc-text b { color: var(--gold); }
+
+    /* ═══════════════ FOOTER ═══════════════ */
     footer {
-      border-top: 1px solid var(--border); padding: 22px 48px;
+      border-top: 1px solid var(--border); padding: 22px 40px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .foot-copy { font-size: 0.8rem; color: var(--muted); }
-    .foot-links { display: flex; gap: 20px; }
-    .foot-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .foot-copy { font-size: 0.78rem; color: var(--muted); }
+    .foot-links { display: flex; gap: 18px; }
+    .foot-links a { font-size: 0.78rem; color: var(--muted); text-decoration: none; transition: color .2s; }
     .foot-links a:hover { color: var(--text); }
 
-    /* ══ AUTH MODAL ══ */
+    /* ═══════════════ AUTH MODAL ═══════════════ */
     .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.5); backdrop-filter: blur(6px);
-      z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.66); backdrop-filter: blur(6px);
+      z-index: 1500; display: flex; align-items: center; justify-content: center; padding: 24px;
       opacity: 0; pointer-events: none; transition: opacity .2s;
     }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
     .modal-box {
-      background: white; border: 1px solid var(--border); border-radius: 22px;
-      padding: 38px 34px; width: 100%; max-width: 400px; position: relative;
+      background: var(--panel); border: 1px solid var(--border); border-radius: 22px;
+      padding: 36px 32px; width: 100%; max-width: 400px; position: relative;
     }
     .modal-close {
-      position: absolute; top: 13px; right: 14px;
-      background: none; border: none; font-size: 1.05rem; color: var(--muted);
-      cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: background .15s;
+      position: absolute; top: 12px; right: 14px; background: none; border: none;
+      font-size: 1.05rem; color: var(--muted); cursor: pointer; padding: 4px 8px; border-radius: 6px;
     }
-    .modal-close:hover { background: var(--bg-2); }
-    .modal-tabs { display: flex; margin-bottom: 26px; border-bottom: 1px solid var(--border); }
+    .modal-close:hover { color: var(--text); }
+    .modal-tabs { display: flex; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
     .modal-tab {
-      flex: 1; padding: 9px; background: none; border: none;
-      font-family: var(--font); font-size: 0.9rem; font-weight: 500;
-      color: var(--muted); cursor: pointer;
-      border-bottom: 2px solid transparent; margin-bottom: -1px;
-      transition: color .15s, border-color .15s;
+      flex: 1; padding: 9px; background: none; border: none; font-family: var(--font);
+      font-size: 0.9rem; font-weight: 500; color: var(--muted); cursor: pointer;
+      border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .15s, border-color .15s;
     }
     .modal-tab.active { color: var(--text); border-bottom-color: var(--gold); }
     .modal-form { display: flex; flex-direction: column; gap: 10px; }
     .modal-input {
-      width: 100%; padding: 11px 14px;
-      background: var(--bg-2); border: 1.5px solid var(--border); border-radius: var(--radius);
-      font-family: var(--font); font-size: 0.9rem; color: var(--text); outline: none;
-      transition: border-color .2s;
+      width: 100%; padding: 11px 14px; background: var(--bg);
+      border: 1.5px solid var(--border); border-radius: 12px;
+      font-family: var(--font); font-size: 0.9rem; color: var(--text); outline: none; transition: border-color .2s;
     }
     .modal-input:focus { border-color: var(--gold); }
     .modal-input::placeholder { color: var(--muted); }
     .modal-submit {
-      width: 100%; padding: 12px;
-      background: var(--gold); color: var(--text);
+      width: 100%; padding: 12px; background: var(--gold); color: #161310;
       font-family: var(--font); font-size: 0.9rem; font-weight: 600;
-      border: none; border-radius: 999px; cursor: pointer;
-      margin-top: 4px; transition: transform .15s, box-shadow .15s;
+      border: none; border-radius: 999px; cursor: pointer; margin-top: 4px; transition: transform .15s;
     }
-    .modal-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(253,195,95,0.45); }
+    .modal-submit:hover { transform: translateY(-1px); }
     .modal-error {
-      font-size: 0.83rem; color: #b91c1c;
-      background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2);
-      border-radius: 8px; padding: 9px 12px; display: none;
+      font-size: 0.83rem; color: #fca5a5; background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.25); border-radius: 8px; padding: 9px 12px; display: none;
     }
     .modal-error.show { display: block; }
 
-    /* ══ RESPONSIVE ══ */
+    /* ═══════════════ RESPONSIVE ═══════════════ */
     @media (max-width: 860px) {
-      nav { padding: 0 20px; }
-      .nav-links { display: none; }
-      .section { padding: 60px 20px; }
+      nav { padding: 0 18px; } .nav-links { display: none; }
+      .wrap { padding: 48px 18px; }
       .tests-grid { grid-template-columns: 1fr; }
-      .strip-inner { grid-template-columns: 1fr; padding: 28px 20px; gap: 20px; }
-      .feat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 0 0 20px; }
-      .feat-item:last-child { border-bottom: none; padding-bottom: 0; }
-      footer { padding: 18px 20px; flex-direction: column; gap: 10px; text-align: center; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      footer { padding: 18px; flex-direction: column; gap: 10px; text-align: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #intro { display: none; }
+      .lb1, .lb2, .lb3 { animation: none; transform: scaleY(1); opacity: 1; }
     }
   </style>
 </head>
 <body>
 
+<!-- ═══ INTRO ═══ -->
+<div id="intro">
+  <div class="intro-bars">
+    <div class="intro-bar ib1"></div>
+    <div class="intro-bar ib2"></div>
+    <div class="intro-bar ib3"></div>
+  </div>
+  <h1 class="intro-word" id="intro-word"><span>S</span><span>E</span><span>N</span><span>U</span></h1>
+  <div class="intro-sub">сену · to believe</div>
+  <div class="intro-skip">click to enter</div>
+</div>
+
 <!-- ═══ NAV ═══ -->
 <nav id="main-nav">
   <a href="index.html" class="logo">
-    <div class="logo-bars">
-      <div class="lb lb1"></div>
-      <div class="lb lb2"></div>
-      <div class="lb lb3"></div>
-    </div>
+    <div class="logo-bars"><div class="lb lb1"></div><div class="lb lb2"></div><div class="lb lb3"></div></div>
     <span class="logo-name">SENU</span>
   </a>
   <ul class="nav-links">
     <li><a href="#tests">Mock Tests</a></li>
     <li><a href="quiz.html">Practice</a></li>
+    <li><a href="#progress">Progress</a></li>
   </ul>
   <div class="nav-right" id="nav-right">
     <button class="btn-ghost" onclick="openModal('login')">Log in</button>
@@ -346,86 +295,66 @@
   </div>
 </nav>
 
-<!-- ═══ HERO ═══ -->
-<section class="hero">
-  <div id="beams-bg"></div>
-
-  <div class="hero-inner">
-    <div class="hero-tag">NUET · Adaptive Exam Prep</div>
-    <h1>Prepare Smarter.<br>Score Higher.</h1>
-    <p class="hero-sub">Adaptive Critical Thinking &amp; Mathematics practice that adjusts to your level — so you improve exactly where it counts.</p>
-    <div class="hero-cta">
-      <a href="quiz.html" class="btn-primary">Start Free Practice →</a>
-      <a href="#tests" class="btn-outline-light">Mock Tests ↓</a>
-    </div>
-  </div>
-
-  <a href="#tests" class="scroll-hint">
-    <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
-  </a>
-</section>
-
-<!-- ═══ MOCK TESTS ═══ -->
+<!-- ═══ MOCK TESTS (first thing visitors see) ═══ -->
 <section id="tests">
-  <div class="section">
-    <div class="sec-label">Free Mock Exams</div>
-    <h2 class="sec-title">Mock Tests</h2>
-    <p class="sec-sub">Full-length NUET-style exams. Complete all questions and see your detailed score breakdown.</p>
+  <div class="wrap">
+    <div class="eyebrow">Free Mock Exams</div>
+    <h2 class="sec-title">Start with a full mock test</h2>
+    <p class="sec-sub">NUET-style Critical Thinking &amp; Mathematics. Pick a level and see exactly where you stand.</p>
     <div class="tests-grid">
       <div class="test-card">
         <span class="test-free">Free</span>
         <div class="test-num">01</div>
-        <span class="test-meta">CT · MA · 5 questions</span>
-        <h3>Mock Test 1</h3>
-        <p>Standard difficulty. Core NUET argument types and foundational maths.</p>
+        <span class="test-meta">CT · MA · Adaptive</span>
+        <h3>Foundations</h3>
+        <p>Core argument types and foundational maths. A gentle place to begin.</p>
         <a href="quiz.html" class="btn-start-sm">Start →</a>
       </div>
       <div class="test-card">
         <span class="test-free">Free</span>
         <div class="test-num">02</div>
-        <span class="test-meta">CT · MA · 5 questions</span>
-        <h3>Mock Test 2</h3>
-        <p>Intermediate level. Increases complexity in both CT and MA sections.</p>
+        <span class="test-meta">CT · MA · Adaptive</span>
+        <h3>Step Up</h3>
+        <p>Increased complexity across both sections as your level climbs.</p>
         <a href="quiz.html" class="btn-start-sm">Start →</a>
       </div>
       <div class="test-card">
         <span class="test-free">Free</span>
         <div class="test-num">03</div>
-        <span class="test-meta">CT · MA · 5 questions</span>
-        <h3>Mock Test 3</h3>
-        <p>Advanced difficulty. Closest to real NUET exam conditions and depth.</p>
+        <span class="test-meta">CT · MA · Adaptive</span>
+        <h3>Exam Pressure</h3>
+        <p>The hardest items, closest to real NUET depth and timing.</p>
         <a href="quiz.html" class="btn-start-sm">Start →</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══ FEATURES STRIP ═══ -->
-<div class="strip">
-  <div class="strip-inner">
-    <div class="feat-item">
-      <div class="feat-icon fi1">🧠</div>
-      <div><div class="feat-label">Adaptive Testing</div><div class="feat-desc">IRT algorithm adjusts difficulty in real time</div></div>
+<!-- ═══ PROGRESS / ANALYTICS ═══ -->
+<section id="progress">
+  <div class="wrap">
+    <div class="eyebrow">The numbers</div>
+    <h2 class="sec-title">Practice that adapts and tracks</h2>
+    <p class="sec-sub">Every answer adjusts your difficulty in real time. Live figures from the SENU engine:</p>
+
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-val" id="stat-q">—</div><div class="stat-lbl">Questions in bank</div></div>
+      <div class="stat"><div class="stat-val" id="stat-att">—</div><div class="stat-lbl">Practice attempts</div></div>
+      <div class="stat"><div class="stat-val" id="stat-avg">—</div><div class="stat-lbl">Average score</div></div>
+      <div class="stat"><div class="stat-val" id="stat-users">—</div><div class="stat-lbl">Learners</div></div>
     </div>
-    <div class="feat-item">
-      <div class="feat-icon fi2">📊</div>
-      <div><div class="feat-label">Progress Tracking</div><div class="feat-desc">History, score trends, weak topic analysis</div></div>
-    </div>
-    <div class="feat-item">
-      <div class="feat-icon fi3">📚</div>
-      <div><div class="feat-label">500+ Questions</div><div class="feat-desc">Every question with a detailed explanation</div></div>
+
+    <div class="you-card" id="you-card">
+      <div class="yc-text">Create a free account to earn points and track your progress.</div>
+      <button class="btn-gold-sm" onclick="openModal('register')">Sign up →</button>
     </div>
   </div>
-</div>
+</section>
 
 <!-- ═══ FOOTER ═══ -->
 <footer>
   <span class="foot-copy">© 2026 SENU · Adaptive NUET Prep · Built by Amir</span>
-  <div class="foot-links">
-    <a href="#">Privacy</a>
-    <a href="#">Terms</a>
-    <a href="#">Contact</a>
-  </div>
+  <div class="foot-links"><a href="#tests">Mock Tests</a><a href="quiz.html">Practice</a></div>
 </footer>
 
 <!-- ═══ AUTH MODAL ═══ -->
@@ -456,217 +385,35 @@
   </div>
 </div>
 
-<!-- Three.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
-/* ══════════════════════════════════════════════
-   THREE.JS BEAMS  (ported from Beams.jsx)
-══════════════════════════════════════════════ */
+/* ═══════════════ API base (local vs deployed) ═══════════════ */
+const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:')
+  ? 'http://localhost:8000'
+  : 'https://YOUR-RENDER-URL.onrender.com';   // ← после деплоя вставь сюда адрес с Render
+
+/* ═══════════════ INTRO ANIMATION ═══════════════ */
 (function () {
-  const container = document.getElementById('beams-bg');
-  if (!container) return;
-
-  /* ── noise GLSL (same as original) ── */
-  const NOISE_GLSL = `
-float random2d(in vec2 st){return fract(sin(dot(st.xy,vec2(12.9898,78.233)))*43758.5453123);}
-float noise2d(in vec2 st){
-  vec2 i=floor(st);vec2 f=fract(st);
-  float a=random2d(i);float b=random2d(i+vec2(1.,0.));
-  float c=random2d(i+vec2(0.,1.));float d=random2d(i+vec2(1.,1.));
-  vec2 u=f*f*(3.-2.*f);
-  return mix(a,b,u.x)+(c-a)*u.y*(1.-u.x)+(d-b)*u.x*u.y;
-}
-vec4 permute4(vec4 x){return mod(((x*34.0)+1.0)*x,289.0);}
-vec4 taylorInvSqrt4(vec4 r){return 1.79284291400159-0.85373472095314*r;}
-vec3 fade3(vec3 t){return t*t*t*(t*(t*6.-15.)+10.);}
-float cnoise(vec3 P){
-  vec3 Pi0=floor(P);vec3 Pi1=Pi0+vec3(1.);Pi0=mod(Pi0,289.);Pi1=mod(Pi1,289.);
-  vec3 Pf0=fract(P);vec3 Pf1=Pf0-vec3(1.);
-  vec4 ix=vec4(Pi0.x,Pi1.x,Pi0.x,Pi1.x);vec4 iy=vec4(Pi0.yy,Pi1.yy);
-  vec4 iz0=Pi0.zzzz;vec4 iz1=Pi1.zzzz;
-  vec4 ixy=permute4(permute4(ix)+iy);vec4 ixy0=permute4(ixy+iz0);vec4 ixy1=permute4(ixy+iz1);
-  vec4 gx0=ixy0/7.;vec4 gy0=fract(floor(gx0)/7.)-0.5;gx0=fract(gx0);
-  vec4 gz0=vec4(0.5)-abs(gx0)-abs(gy0);vec4 sz0=step(gz0,vec4(0.));
-  gx0-=sz0*(step(0.,gx0)-0.5);gy0-=sz0*(step(0.,gy0)-0.5);
-  vec4 gx1=ixy1/7.;vec4 gy1=fract(floor(gx1)/7.)-0.5;gx1=fract(gx1);
-  vec4 gz1=vec4(0.5)-abs(gx1)-abs(gy1);vec4 sz1=step(gz1,vec4(0.));
-  gx1-=sz1*(step(0.,gx1)-0.5);gy1-=sz1*(step(0.,gy1)-0.5);
-  vec3 g000=vec3(gx0.x,gy0.x,gz0.x);vec3 g100=vec3(gx0.y,gy0.y,gz0.y);
-  vec3 g010=vec3(gx0.z,gy0.z,gz0.z);vec3 g110=vec3(gx0.w,gy0.w,gz0.w);
-  vec3 g001=vec3(gx1.x,gy1.x,gz1.x);vec3 g101=vec3(gx1.y,gy1.y,gz1.y);
-  vec3 g011=vec3(gx1.z,gy1.z,gz1.z);vec3 g111=vec3(gx1.w,gy1.w,gz1.w);
-  vec4 norm0=taylorInvSqrt4(vec4(dot(g000,g000),dot(g010,g010),dot(g100,g100),dot(g110,g110)));
-  g000*=norm0.x;g010*=norm0.y;g100*=norm0.z;g110*=norm0.w;
-  vec4 norm1=taylorInvSqrt4(vec4(dot(g001,g001),dot(g011,g011),dot(g101,g101),dot(g111,g111)));
-  g001*=norm1.x;g011*=norm1.y;g101*=norm1.z;g111*=norm1.w;
-  float n000=dot(g000,Pf0);float n100=dot(g100,vec3(Pf1.x,Pf0.yz));
-  float n010=dot(g010,vec3(Pf0.x,Pf1.y,Pf0.z));float n110=dot(g110,vec3(Pf1.xy,Pf0.z));
-  float n001=dot(g001,vec3(Pf0.xy,Pf1.z));float n101=dot(g101,vec3(Pf1.x,Pf0.y,Pf1.z));
-  float n011=dot(g011,vec3(Pf0.x,Pf1.yz));float n111=dot(g111,Pf1);
-  vec3 fade_xyz=fade3(Pf0);
-  vec4 n_z=mix(vec4(n000,n100,n010,n110),vec4(n001,n101,n011,n111),fade_xyz.z);
-  vec2 n_yz=mix(n_z.xy,n_z.zw,fade_xyz.y);
-  return 2.2*mix(n_yz.x,n_yz.y,fade_xyz.x);
-}`;
-
-  /* ── config ── */
-  const BEAM_COUNT = 12, BEAM_W = 2, BEAM_H = 15, HEIGHT_SEG = 100;
-  const SPEED = 2, NOISE_SCALE = 0.2, NOISE_INT = 1.75;
-  const LIGHT_COL = '#fdc35f';
-
-  /* ── scene ── */
-  const scene    = new THREE.Scene();
-  scene.background = new THREE.Color('#000000');
-
-  const camera   = new THREE.PerspectiveCamera(30, container.offsetWidth / container.offsetHeight, 0.1, 100);
-  camera.position.set(0, 0, 20);
-
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.setSize(container.offsetWidth, container.offsetHeight);
-  container.appendChild(renderer.domElement);
-
-  scene.add(new THREE.AmbientLight(0xffffff, 1));
-  const dirLight = new THREE.DirectionalLight(LIGHT_COL, 1);
-  dirLight.position.set(0, 3, 10);
-  scene.add(dirLight);
-
-  /* ── stacked planes geometry ── */
-  function buildGeometry(n, w, h, seg) {
-    const geo  = new THREE.BufferGeometry();
-    const vNum = n * (seg + 1) * 2;
-    const fNum = n * seg * 2;
-    const pos  = new Float32Array(vNum * 3);
-    const uv   = new Float32Array(vNum * 2);
-    const idx  = new Uint32Array(fNum * 3);
-    let vi = 0, ui = 0, ii = 0;
-    const totalW = n * w;
-    const xBase  = -totalW / 2;
-    for (let i = 0; i < n; i++) {
-      const xOff  = xBase + i * w;
-      const uvX   = Math.random() * 300;
-      const uvY   = Math.random() * 300;
-      for (let j = 0; j <= seg; j++) {
-        const y = h * (j / seg - 0.5);
-        pos[vi * 3]     = xOff;      pos[vi * 3 + 1] = y; pos[vi * 3 + 2] = 0;
-        pos[vi * 3 + 3] = xOff + w;  pos[vi * 3 + 4] = y; pos[vi * 3 + 5] = 0;
-        const uvV = j / seg;
-        uv[ui]     = uvX;     uv[ui + 1] = uvV + uvY;
-        uv[ui + 2] = uvX + 1; uv[ui + 3] = uvV + uvY;
-        if (j < seg) {
-          idx[ii] = vi; idx[ii+1] = vi+1; idx[ii+2] = vi+2;
-          idx[ii+3] = vi+2; idx[ii+4] = vi+1; idx[ii+5] = vi+3;
-          ii += 6;
-        }
-        vi += 2; ui += 4;
-      }
-    }
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
-    geo.setIndex(new THREE.BufferAttribute(idx, 1));
-    geo.computeVertexNormals();
-    return geo;
+  const intro = document.getElementById('intro');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let ended = false;
+  function endIntro() {
+    if (ended) return; ended = true;
+    intro.classList.add('done');
+    setTimeout(() => { intro.style.display = 'none'; }, 750);
   }
+  intro.addEventListener('click', endIntro);
 
-  /* ── custom material (extends MeshStandardMaterial) ── */
-  const mat = new THREE.MeshStandardMaterial({
-    color: 0x000000,
-    roughness: 0.3,
-    metalness: 0.3,
-    envMapIntensity: 10,
-  });
+  if (reduce || !window.gsap) { endIntro(); return; }
 
-  let shaderRef = null;
-
-  mat.onBeforeCompile = function (shader) {
-    shader.uniforms.time           = { value: 0 };
-    shader.uniforms.uSpeed         = { value: SPEED };
-    shader.uniforms.uScale         = { value: NOISE_SCALE };
-    shader.uniforms.uNoiseIntensity = { value: NOISE_INT };
-
-    const header = `
-      uniform float time;
-      uniform float uSpeed;
-      uniform float uScale;
-      uniform float uNoiseIntensity;
-      ${NOISE_GLSL}
-    `;
-
-    const vertHelpers = `
-      float getPos(vec3 p){
-        vec3 np=vec3(p.x*0.,p.y-uv.y,p.z+time*uSpeed*3.)*uScale;
-        return cnoise(np);
-      }
-      vec3 getCurrentPos(vec3 p){vec3 n=p;n.z+=getPos(p);return n;}
-      vec3 getNormal2(vec3 p){
-        vec3 c=getCurrentPos(p);
-        vec3 nx=getCurrentPos(p+vec3(0.01,0.,0.));
-        vec3 nz=getCurrentPos(p+vec3(0.,-0.01,0.));
-        return normalize(cross(normalize(nz-c),normalize(nx-c)));
-      }
-    `;
-
-    shader.vertexShader = header + vertHelpers + shader.vertexShader;
-    shader.vertexShader = shader.vertexShader.replace(
-      '#include <begin_vertex>',
-      '#include <begin_vertex>\ntransformed.z += getPos(transformed.xyz);'
-    );
-    shader.vertexShader = shader.vertexShader.replace(
-      '#include <beginnormal_vertex>',
-      '#include <beginnormal_vertex>\nobjectNormal = getNormal2(position.xyz);'
-    );
-
-    shader.fragmentShader = header + shader.fragmentShader;
-    shader.fragmentShader = shader.fragmentShader.replace(
-      '#include <dithering_fragment>',
-      `#include <dithering_fragment>
-       float rn = noise2d(gl_FragCoord.xy);
-       gl_FragColor.rgb -= rn / 15.0 * uNoiseIntensity;`
-    );
-
-    shaderRef = shader;
-  };
-
-  const mesh = new THREE.Mesh(buildGeometry(BEAM_COUNT, BEAM_W, BEAM_H, HEIGHT_SEG), mat);
-  scene.add(mesh);
-
-  /* ── loop ── */
-  const clock = new THREE.Clock();
-  function animate() {
-    if (shaderRef) shaderRef.uniforms.time.value += 0.1 * clock.getDelta();
-    renderer.render(scene, camera);
-    requestAnimationFrame(animate);
-  }
-  animate();
-
-  /* ── resize ── */
-  window.addEventListener('resize', () => {
-    const w = container.offsetWidth, h = container.offsetHeight;
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
-  });
+  const tl = gsap.timeline({ onComplete: () => setTimeout(endIntro, 400) });
+  tl.from('.intro-bar', { scaleY: 0, transformOrigin: 'bottom center', duration: 0.6, stagger: 0.12, ease: 'power3.out' })
+    .from('.intro-word span', { y: 50, opacity: 0, duration: 0.7, stagger: 0.07, ease: 'power3.out' }, '-=0.15')
+    .from('.intro-sub', { opacity: 0, y: 10, duration: 0.5, ease: 'power2.out' }, '-=0.2')
+    .from('.intro-skip', { opacity: 0, duration: 0.4 }, '-=0.1');
 })();
 
-/* ══════════════════════════════════════════════
-   NAV SCROLL — light/dark switch
-══════════════════════════════════════════════ */
-(function () {
-  const nav  = document.getElementById('main-nav');
-  const hero = document.querySelector('.hero');
-  if (!nav || !hero) return;
-  const observer = new IntersectionObserver(
-    ([e]) => { nav.classList.toggle('scrolled', !e.isIntersecting); },
-    { threshold: 0.05 }
-  );
-  observer.observe(hero);
-})();
-
-/* ══════════════════════════════════════════════
-   AUTH
-══════════════════════════════════════════════ */
-const API = 'http://localhost:8000';
+/* ═══════════════ AUTH ═══════════════ */
 function getToken() { return localStorage.getItem('senu_token'); }
 function getUser()  { return JSON.parse(localStorage.getItem('senu_user') || 'null'); }
 function setSession(t, u) { localStorage.setItem('senu_token', t); localStorage.setItem('senu_user', JSON.stringify(u)); updateNav(); }
@@ -675,57 +422,92 @@ function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').re
 
 function updateNav() {
   const user = getUser(), nr = document.getElementById('nav-right');
-  if (!nr) return;
+  if (nr) {
+    if (user) {
+      nr.innerHTML =
+        `<span class="nav-username">${esc(user.username)}</span>` +
+        `<span class="nav-points">⭐ ${user.points} pts</span>` +
+        `<button class="btn-logout" onclick="doLogout()">Log out</button>`;
+    } else {
+      nr.innerHTML =
+        `<button class="btn-ghost" onclick="openModal('login')">Log in</button>` +
+        `<button class="btn-gold-sm" onclick="openModal('register')">Sign up →</button>`;
+    }
+  }
+  renderYou();
+}
+
+function renderYou() {
+  const yc = document.getElementById('you-card'); if (!yc) return;
+  const user = getUser();
   if (user) {
-    nr.innerHTML =
-      `<span class="nav-username">${esc(user.username)}</span>` +
-      `<span class="nav-points">⭐ ${user.points} pts</span>` +
-      `<button class="btn-logout" onclick="doLogout()">Log out</button>`;
+    yc.innerHTML =
+      `<div class="yc-text">Signed in as <b>${esc(user.username)}</b> · <b>${user.points} pts</b>. Keep your streak going.</div>` +
+      `<a href="quiz.html" class="btn-gold-sm">Practice now →</a>`;
   } else {
-    nr.innerHTML =
-      `<button class="btn-ghost" onclick="openModal('login')">Log in</button>` +
+    yc.innerHTML =
+      `<div class="yc-text">Create a free account to earn points and track your progress.</div>` +
       `<button class="btn-gold-sm" onclick="openModal('register')">Sign up →</button>`;
   }
 }
-function openModal(t) { document.getElementById('auth-modal').classList.add('open'); switchTab(t||'login'); }
+
+function openModal(t) { document.getElementById('auth-modal').classList.add('open'); switchTab(t || 'login'); }
 function closeModal()  { document.getElementById('auth-modal').classList.remove('open'); }
 function switchTab(t) {
-  document.getElementById('tab-login').classList.toggle('active', t==='login');
-  document.getElementById('tab-register').classList.toggle('active', t==='register');
-  document.getElementById('form-login').style.display    = t==='login'    ? '' : 'none';
-  document.getElementById('form-register').style.display = t==='register' ? '' : 'none';
+  document.getElementById('tab-login').classList.toggle('active', t === 'login');
+  document.getElementById('tab-register').classList.toggle('active', t === 'register');
+  document.getElementById('form-login').style.display    = t === 'login'    ? '' : 'none';
+  document.getElementById('form-register').style.display = t === 'register' ? '' : 'none';
 }
-document.getElementById('auth-modal').addEventListener('click', e => { if (e.target===document.getElementById('auth-modal')) closeModal(); });
+document.getElementById('auth-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('auth-modal')) closeModal();
+});
 
 async function doLogin() {
-  const email=document.getElementById('login-email').value.trim(), pw=document.getElementById('login-password').value;
-  const err=document.getElementById('login-error'); err.classList.remove('show');
+  const email = document.getElementById('login-email').value.trim(), pw = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error'); err.classList.remove('show');
   try {
-    const r=await fetch(`${API}/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
-    const d=await r.json();
-    if(!r.ok){err.textContent=d.detail||'Login failed';err.classList.add('show');return;}
-    setSession(d.token,{username:d.username,points:d.points}); closeModal();
-  } catch{err.textContent='Connection error — is the server running?';err.classList.add('show');}
+    const r = await fetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password: pw }) });
+    const d = await r.json();
+    if (!r.ok) { err.textContent = d.detail || 'Login failed'; err.classList.add('show'); return; }
+    setSession(d.token, { username: d.username, points: d.points }); closeModal();
+  } catch { err.textContent = 'Could not reach the server. Is the backend running?'; err.classList.add('show'); }
 }
 async function doRegister() {
-  const un=document.getElementById('reg-username').value.trim(),em=document.getElementById('reg-email').value.trim(),pw=document.getElementById('reg-password').value;
-  const err=document.getElementById('register-error'); err.classList.remove('show');
-  if(!un){err.textContent='Username is required';err.classList.add('show');return;}
+  const un = document.getElementById('reg-username').value.trim(),
+        em = document.getElementById('reg-email').value.trim(),
+        pw = document.getElementById('reg-password').value;
+  const err = document.getElementById('register-error'); err.classList.remove('show');
+  if (!un) { err.textContent = 'Username is required'; err.classList.add('show'); return; }
   try {
-    const r=await fetch(`${API}/register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:un,email:em,password:pw})});
-    const d=await r.json();
-    if(!r.ok){err.textContent=d.detail||'Registration failed';err.classList.add('show');return;}
-    const lr=await fetch(`${API}/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,password:pw})});
-    const ld=await lr.json();
-    if(lr.ok){setSession(ld.token,{username:ld.username,points:ld.points});closeModal();}else switchTab('login');
-  } catch{err.textContent='Connection error — is the server running?';err.classList.add('show');}
+    const r = await fetch(`${API}/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username: un, email: em, password: pw }) });
+    const d = await r.json();
+    if (!r.ok) { err.textContent = d.detail || 'Registration failed'; err.classList.add('show'); return; }
+    const lr = await fetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: em, password: pw }) });
+    const ld = await lr.json();
+    if (lr.ok) { setSession(ld.token, { username: ld.username, points: ld.points }); closeModal(); } else switchTab('login');
+  } catch { err.textContent = 'Could not reach the server. Is the backend running?'; err.classList.add('show'); }
 }
 async function doLogout() {
-  const t=getToken();
-  if(t){try{await fetch(`${API}/logout`,{method:'POST',headers:{'Authorization':`Bearer ${t}`}});}catch{}}
+  const t = getToken();
+  if (t) { try { await fetch(`${API}/logout`, { method:'POST', headers:{'Authorization':`Bearer ${t}`} }); } catch {} }
   clearSession();
 }
+
+/* ═══════════════ LIVE STATS ═══════════════ */
+async function loadStats() {
+  try {
+    const r = await fetch(`${API}/stats`);
+    const d = await r.json();
+    document.getElementById('stat-q').textContent     = d.questions_in_bank ?? '—';
+    document.getElementById('stat-att').textContent   = d.total_attempts ?? '—';
+    document.getElementById('stat-avg').textContent   = d.avg_score_pct != null ? d.avg_score_pct + '%' : '—';
+    document.getElementById('stat-users').textContent = d.registered_users ?? '—';
+  } catch (e) { /* оставляем прочерки, если сервер не запущен */ }
+}
+
 updateNav();
+loadStats();
 </script>
 </body>
 </html>
