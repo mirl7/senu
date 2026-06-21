@@ -548,9 +548,16 @@
       font-size: 1.02rem;
       line-height: 1.78;
     }
+    /* server cold-start hint */
+    .wake-toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px);
+      background:var(--panel,#121110); border:1px solid var(--border,#232019); color:var(--text,#f4efe4);
+      padding:12px 18px; border-radius:999px; font-size:0.85rem; box-shadow:0 10px 34px rgba(0,0,0,0.55);
+      opacity:0; pointer-events:none; z-index:3000; transition:opacity .25s, transform .25s; }
+    .wake-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
+<div class="wake-toast" id="wake-toast">⏳ Waking up the server… the first load can take up to a minute.</div>
 
 <!-- NAV -->
 <nav>
@@ -645,6 +652,15 @@
 const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:')
   ? 'http://localhost:8000'
   : 'https://senu-api.onrender.com';
+
+/* cold-start "server waking up" indicator */
+let _wakeN = 0, _wakeT = null;
+function wakeStart() { _wakeN++; if (_wakeT) return;
+  _wakeT = setTimeout(function(){ var e=document.getElementById('wake-toast'); if(e) e.classList.add('show'); }, 2500); }
+function wakeStop() { _wakeN = Math.max(0,_wakeN-1);
+  if (_wakeN===0){ clearTimeout(_wakeT); _wakeT=null; var e=document.getElementById('wake-toast'); if(e) e.classList.remove('show'); } }
+function wfetch(...a) { wakeStart(); return fetch(...a).finally(wakeStop); }
+
 const QUIZ_LENGTH   = 8;
 const START_ABILITY = 2.0;
 const STEP          = 0.5;
@@ -686,7 +702,7 @@ async function loadNext() {
   try {
     const url = `${API}/questions/next?section=${encodeURIComponent(section)}`
               + `&ability=${ability}&exclude=${askedIds.join(',')}`;
-    const res = await fetch(url);
+    const res = await wfetch(url);
     const q = await res.json();
     if (q.done || !q.id) { showResults(); return; }
     curQuestion = q;
@@ -743,7 +759,7 @@ async function selectOpt(idx) {
 
   let data;
   try {
-    const res = await fetch(`${API}/questions/answer`, {
+    const res = await wfetch(`${API}/questions/answer`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question_id: curQuestion.id, choice: idx }),
@@ -794,7 +810,7 @@ async function showResults() {
     const token = localStorage.getItem('senu_token');
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
-    const res = await fetch(`${API}/submit`, {
+    const res = await wfetch(`${API}/submit`, {
       method: 'POST', headers,
       body: JSON.stringify({ name: userName, score, total, section })
     });

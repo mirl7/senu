@@ -262,9 +262,16 @@
       #intro { display: none; }
       .lb1, .lb2, .lb3 { animation: none; transform: scaleY(1); opacity: 1; }
     }
+    /* server cold-start hint */
+    .wake-toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px);
+      background:var(--panel,#121110); border:1px solid var(--border,#232019); color:var(--text,#f4efe4);
+      padding:12px 18px; border-radius:999px; font-size:0.85rem; box-shadow:0 10px 34px rgba(0,0,0,0.55);
+      opacity:0; pointer-events:none; z-index:3000; transition:opacity .25s, transform .25s; }
+    .wake-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
+<div class="wake-toast" id="wake-toast">⏳ Waking up the server… the first load can take up to a minute.</div>
 
 <!-- ═══ INTRO ═══ -->
 <div id="intro">
@@ -287,7 +294,7 @@
   <ul class="nav-links">
     <li><a href="#tests">Mock Tests</a></li>
     <li><a href="quiz.html">Practice</a></li>
-    <li><a href="#progress">Progress</a></li>
+    <li><a href="progress.html">Progress</a></li>
   </ul>
   <div class="nav-right" id="nav-right">
     <button class="btn-ghost" onclick="openModal('login')">Log in</button>
@@ -392,6 +399,15 @@ const API = (location.hostname === 'localhost' || location.hostname === '127.0.0
   ? 'http://localhost:8000'
   : 'https://senu-api.onrender.com';
 
+/* cold-start "server waking up" indicator */
+let _wakeN = 0, _wakeT = null;
+function wakeStart() { _wakeN++; if (_wakeT) return;
+  _wakeT = setTimeout(function(){ var e=document.getElementById('wake-toast'); if(e) e.classList.add('show'); }, 2500); }
+function wakeStop() { _wakeN = Math.max(0,_wakeN-1);
+  if (_wakeN===0){ clearTimeout(_wakeT); _wakeT=null; var e=document.getElementById('wake-toast'); if(e) e.classList.remove('show'); } }
+function wfetch(...a) { wakeStart(); return fetch(...a).finally(wakeStop); }
+
+
 /* ═══════════════ INTRO ANIMATION ═══════════════ */
 (function () {
   const intro = document.getElementById('intro');
@@ -443,7 +459,7 @@ function renderYou() {
   if (user) {
     yc.innerHTML =
       `<div class="yc-text">Signed in as <b>${esc(user.username)}</b> · <b>${user.points} pts</b>. Keep your streak going.</div>` +
-      `<a href="quiz.html" class="btn-gold-sm">Practice now →</a>`;
+      `<div style="display:flex;gap:8px;flex-wrap:wrap"><a href="progress.html" class="btn-ghost">Your progress →</a><a href="quiz.html" class="btn-gold-sm">Practice now →</a></div>`;
   } else {
     yc.innerHTML =
       `<div class="yc-text">Create a free account to earn points and track your progress.</div>` +
@@ -467,7 +483,7 @@ async function doLogin() {
   const email = document.getElementById('login-email').value.trim(), pw = document.getElementById('login-password').value;
   const err = document.getElementById('login-error'); err.classList.remove('show');
   try {
-    const r = await fetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password: pw }) });
+    const r = await wfetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password: pw }) });
     const d = await r.json();
     if (!r.ok) { err.textContent = d.detail || 'Login failed'; err.classList.add('show'); return; }
     setSession(d.token, { username: d.username, points: d.points }); closeModal();
@@ -480,24 +496,24 @@ async function doRegister() {
   const err = document.getElementById('register-error'); err.classList.remove('show');
   if (!un) { err.textContent = 'Username is required'; err.classList.add('show'); return; }
   try {
-    const r = await fetch(`${API}/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username: un, email: em, password: pw }) });
+    const r = await wfetch(`${API}/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username: un, email: em, password: pw }) });
     const d = await r.json();
     if (!r.ok) { err.textContent = d.detail || 'Registration failed'; err.classList.add('show'); return; }
-    const lr = await fetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: em, password: pw }) });
+    const lr = await wfetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: em, password: pw }) });
     const ld = await lr.json();
     if (lr.ok) { setSession(ld.token, { username: ld.username, points: ld.points }); closeModal(); } else switchTab('login');
   } catch { err.textContent = 'Could not reach the server. Is the backend running?'; err.classList.add('show'); }
 }
 async function doLogout() {
   const t = getToken();
-  if (t) { try { await fetch(`${API}/logout`, { method:'POST', headers:{'Authorization':`Bearer ${t}`} }); } catch {} }
+  if (t) { try { await wfetch(`${API}/logout`, { method:'POST', headers:{'Authorization':`Bearer ${t}`} }); } catch {} }
   clearSession();
 }
 
 /* ═══════════════ LIVE STATS ═══════════════ */
 async function loadStats() {
   try {
-    const r = await fetch(`${API}/stats`);
+    const r = await wfetch(`${API}/stats`);
     const d = await r.json();
     document.getElementById('stat-q').textContent     = d.questions_in_bank ?? '—';
     document.getElementById('stat-att').textContent   = d.total_attempts ?? '—';

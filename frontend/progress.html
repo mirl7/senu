@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SENU — Your Progress</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold:#fdc35f; --gold-soft:rgba(253,195,95,0.12);
+      --bg:#080705; --panel:#121110; --text:#f4efe4; --muted:#8a8278;
+      --border:#232019; --green:#6ee7a0; --font:'Space Grotesk',system-ui,sans-serif;
+    }
+    body { font-family:var(--font); background:var(--bg); color:var(--text); line-height:1.6; -webkit-font-smoothing:antialiased; }
+
+    /* nav */
+    nav { position:sticky; top:0; z-index:100; height:60px; padding:0 40px;
+      display:flex; align-items:center; justify-content:space-between;
+      background:rgba(8,7,5,0.72); backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border); }
+    .logo { display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--text); }
+    .logo-bars { display:flex; align-items:flex-end; gap:1.5px; height:22px; }
+    .lb { width:6px; }
+    .lb1 { height:8px;  background:rgba(253,195,95,0.3); border:1.5px solid rgba(253,195,95,0.5); }
+    .lb2 { height:14px; background:rgba(253,195,95,0.62); border:1.5px solid rgba(253,195,95,0.8); }
+    .lb3 { height:22px; background:var(--gold); }
+    .logo-name { font-family:'Times New Roman',Times,serif; font-size:1.45rem; font-weight:700; text-transform:lowercase; }
+    .nav-links { display:flex; align-items:center; gap:26px; list-style:none; }
+    .nav-links a { font-size:0.85rem; font-weight:500; color:var(--muted); text-decoration:none; transition:color .2s; }
+    .nav-links a:hover, .nav-links a.active { color:var(--text); }
+    .nav-right { display:flex; align-items:center; gap:8px; }
+    .nav-username { font-size:0.85rem; font-weight:600; }
+    .nav-points { font-size:0.78rem; color:var(--gold); background:var(--gold-soft);
+      border:1px solid rgba(253,195,95,0.3); padding:4px 11px; border-radius:999px; }
+    .btn-logout, .btn-login {
+      font-family:var(--font); font-size:0.78rem; color:var(--muted);
+      background:none; border:1.5px solid var(--border); border-radius:999px;
+      padding:6px 14px; cursor:pointer; text-decoration:none; transition:border-color .2s,color .2s; }
+    .btn-logout:hover, .btn-login:hover { border-color:var(--gold); color:var(--text); }
+    .btn-gold {
+      display:inline-flex; align-items:center; gap:6px; padding:11px 22px;
+      background:var(--gold); color:#161310; font-family:var(--font); font-weight:600;
+      font-size:0.9rem; border:none; border-radius:999px; cursor:pointer; text-decoration:none;
+      transition:transform .15s, box-shadow .15s; }
+    .btn-gold:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(253,195,95,0.35); }
+
+    .wrap { max-width:920px; margin:0 auto; padding:56px 40px; }
+    .eyebrow { display:inline-flex; align-items:center; gap:8px; font-size:0.7rem; font-weight:600;
+      letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
+    .eyebrow::before { content:''; width:22px; height:1px; background:var(--gold); opacity:0.6; }
+    h1 { font-size:clamp(1.8rem,3.4vw,2.4rem); font-weight:700; letter-spacing:-0.02em; }
+    .sub { color:var(--muted); margin-top:8px; }
+
+    /* states */
+    .hidden { display:none; }
+    .center-card { max-width:440px; margin:80px auto; text-align:center;
+      background:var(--panel); border:1px solid var(--border); border-radius:22px; padding:44px 36px; }
+    .center-card h2 { font-size:1.4rem; font-weight:700; margin-bottom:10px; }
+    .center-card p { color:var(--muted); margin-bottom:24px; }
+
+    /* stats */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:36px 0; }
+    .stat { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:24px 20px; }
+    .stat-val { font-size:2.2rem; font-weight:700; letter-spacing:-0.02em; line-height:1; font-variant-numeric:tabular-nums; }
+    .stat-lbl { margin-top:8px; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); }
+
+    .panel { background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:26px; margin-bottom:18px; }
+    .panel-title { font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:18px; }
+
+    /* section bars */
+    .sec-row { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+    .sec-name { width:150px; font-size:0.9rem; }
+    .sec-track { flex:1; height:10px; background:var(--bg); border:1px solid var(--border); border-radius:999px; overflow:hidden; }
+    .sec-fill { height:100%; background:var(--gold); border-radius:999px; transition:width .8s cubic-bezier(.22,1,.36,1); }
+    .sec-pct { width:54px; text-align:right; font-size:0.88rem; font-variant-numeric:tabular-nums; color:var(--muted); }
+
+    /* trend */
+    .trend { display:flex; align-items:flex-end; gap:6px; height:120px; margin-top:6px; }
+    .tbar { flex:1; min-width:8px; background:linear-gradient(180deg,var(--gold),rgba(253,195,95,0.35));
+      border-radius:4px 4px 2px 2px; transition:height .7s cubic-bezier(.22,1,.36,1); position:relative; }
+    .tbar span { position:absolute; top:-18px; left:50%; transform:translateX(-50%);
+      font-size:0.62rem; color:var(--muted); font-variant-numeric:tabular-nums; }
+
+    /* attempts list */
+    .att { display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:12px 0; border-bottom:1px solid var(--border); font-size:0.9rem; }
+    .att:last-child { border-bottom:none; }
+    .att-left { display:flex; align-items:center; gap:12px; }
+    .att-sec { font-size:0.66rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);
+      background:var(--bg); border:1px solid var(--border); padding:3px 9px; border-radius:999px; }
+    .att-date { color:var(--muted); font-size:0.82rem; }
+    .att-pct { font-weight:600; font-variant-numeric:tabular-nums; }
+
+    .wake-toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px);
+      background:var(--panel); border:1px solid var(--border); color:var(--text);
+      padding:12px 18px; border-radius:999px; font-size:0.85rem; box-shadow:0 10px 34px rgba(0,0,0,0.55);
+      opacity:0; pointer-events:none; z-index:3000; transition:opacity .25s, transform .25s; }
+    .wake-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    @media (max-width:760px) {
+      nav { padding:0 18px; } .nav-links { display:none; }
+      .wrap { padding:40px 18px; }
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .sec-name { width:110px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wake-toast" id="wake-toast">⏳ Waking up the server… the first load can take up to a minute.</div>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-bars"><div class="lb lb1"></div><div class="lb lb2"></div><div class="lb lb3"></div></div>
+    <span class="logo-name">senu</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#tests">Mock Tests</a></li>
+    <li><a href="quiz.html">Practice</a></li>
+    <li><a href="progress.html" class="active">Progress</a></li>
+  </ul>
+  <div class="nav-right" id="nav-right"></div>
+</nav>
+
+<!-- signed out -->
+<div id="signed-out" class="hidden">
+  <div class="center-card">
+    <h2>Sign in to see your progress</h2>
+    <p>Your attempts, averages and weak areas appear here once you have an account.</p>
+    <a href="index.html" class="btn-gold">Go to home & log in →</a>
+  </div>
+</div>
+
+<!-- signed in -->
+<div id="signed-in" class="hidden">
+  <div class="wrap">
+    <div class="eyebrow">Your Progress</div>
+    <h1 id="greet">Your progress</h1>
+    <p class="sub" id="sub"></p>
+
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-val" id="s-att">0</div><div class="stat-lbl">Attempts</div></div>
+      <div class="stat"><div class="stat-val" id="s-avg">—</div><div class="stat-lbl">Average</div></div>
+      <div class="stat"><div class="stat-val" id="s-best">—</div><div class="stat-lbl">Best</div></div>
+      <div class="stat"><div class="stat-val" id="s-pts">0</div><div class="stat-lbl">Points</div></div>
+    </div>
+
+    <div id="empty" class="panel hidden" style="text-align:center">
+      <p style="color:var(--muted); margin-bottom:18px">No attempts yet — your progress will appear here.</p>
+      <a href="quiz.html" class="btn-gold">Start practising →</a>
+    </div>
+
+    <div id="has-data" class="hidden">
+      <div class="panel">
+        <div class="panel-title">Score trend (recent attempts)</div>
+        <div class="trend" id="trend"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">By section</div>
+        <div id="sections"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Recent attempts</div>
+        <div id="attempts"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:')
+  ? 'http://localhost:8000'
+  : 'https://senu-api.onrender.com';
+
+/* cold-start indicator */
+let _wakeN = 0, _wakeT = null;
+function wakeStart() { _wakeN++; if (_wakeT) return;
+  _wakeT = setTimeout(function(){ var e=document.getElementById('wake-toast'); if(e) e.classList.add('show'); }, 2500); }
+function wakeStop() { _wakeN = Math.max(0,_wakeN-1);
+  if (_wakeN===0){ clearTimeout(_wakeT); _wakeT=null; var e=document.getElementById('wake-toast'); if(e) e.classList.remove('show'); } }
+function wfetch(...a) { wakeStart(); return fetch(...a).finally(wakeStop); }
+
+function getToken() { return localStorage.getItem('senu_token'); }
+function getUser()  { return JSON.parse(localStorage.getItem('senu_user') || 'null'); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+function hide(id) { document.getElementById(id).classList.add('hidden'); }
+
+function fmtDate(ts) {
+  try {
+    const d = new Date(ts + (ts.endsWith('Z') ? '' : 'Z'));
+    return d.toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+  } catch (e) { return ts; }
+}
+
+function renderNav(user) {
+  const nr = document.getElementById('nav-right');
+  if (user) {
+    nr.innerHTML = `<span class="nav-username">${esc(user.username)}</span>` +
+      `<span class="nav-points">⭐ ${user.points} pts</span>` +
+      `<button class="btn-logout" onclick="doLogout()">Log out</button>`;
+  } else {
+    nr.innerHTML = `<a href="index.html" class="btn-login">Log in</a>`;
+  }
+}
+
+async function doLogout() {
+  const t = getToken();
+  if (t) { try { await wfetch(`${API}/logout`, { method:'POST', headers:{'Authorization':`Bearer ${t}`} }); } catch {} }
+  localStorage.removeItem('senu_token'); localStorage.removeItem('senu_user');
+  location.href = 'index.html';
+}
+
+async function load() {
+  const token = getToken();
+  renderNav(getUser());
+  if (!token) { show('signed-out'); return; }
+
+  let data;
+  try {
+    const r = await wfetch(`${API}/history`, { headers:{ 'Authorization':`Bearer ${token}` } });
+    if (r.status === 401) { localStorage.removeItem('senu_token'); localStorage.removeItem('senu_user'); show('signed-out'); return; }
+    data = await r.json();
+  } catch (e) {
+    show('signed-out');
+    document.querySelector('#signed-out .center-card p').textContent =
+      'Could not reach the server. It may be waking up — try again in a moment.';
+    return;
+  }
+
+  show('signed-in');
+  document.getElementById('greet').textContent = `Hi, ${data.username}`;
+  renderNav({ username: data.username, points: data.points });
+
+  const attempts = data.attempts || [];
+  document.getElementById('s-att').textContent = attempts.length;
+  document.getElementById('s-pts').textContent = data.points;
+
+  if (!attempts.length) {
+    document.getElementById('sub').textContent = 'Take your first quiz to start building your history.';
+    show('empty');
+    return;
+  }
+
+  const pcts = attempts.map(a => a.pct);
+  const avg = pcts.reduce((x, y) => x + y, 0) / pcts.length;
+  const best = Math.max(...pcts);
+  document.getElementById('s-avg').textContent = Math.round(avg) + '%';
+  document.getElementById('s-best').textContent = Math.round(best) + '%';
+  document.getElementById('sub').textContent = `${attempts.length} attempt${attempts.length>1?'s':''} so far. Keep going.`;
+  show('has-data');
+
+  /* trend — oldest → newest, last 14 */
+  const ordered = [...attempts].reverse().slice(-14);
+  const trend = document.getElementById('trend');
+  trend.innerHTML = '';
+  ordered.forEach(a => {
+    const bar = document.createElement('div');
+    bar.className = 'tbar';
+    bar.style.height = Math.max(6, Math.round(a.pct)) + '%';
+    bar.innerHTML = `<span>${Math.round(a.pct)}</span>`;
+    trend.appendChild(bar);
+  });
+
+  /* by section */
+  const secWrap = document.getElementById('sections');
+  const NAMES = { CT: 'Critical Thinking', MA: 'Mathematics' };
+  const bySec = {};
+  attempts.forEach(a => { (bySec[a.section] = bySec[a.section] || []).push(a.pct); });
+  secWrap.innerHTML = '';
+  Object.keys(bySec).forEach(sec => {
+    const arr = bySec[sec];
+    const m = Math.round(arr.reduce((x, y) => x + y, 0) / arr.length);
+    const row = document.createElement('div');
+    row.className = 'sec-row';
+    row.innerHTML = `<div class="sec-name">${NAMES[sec] || sec}</div>` +
+      `<div class="sec-track"><div class="sec-fill" style="width:0%"></div></div>` +
+      `<div class="sec-pct">${m}%</div>`;
+    secWrap.appendChild(row);
+    setTimeout(() => { row.querySelector('.sec-fill').style.width = m + '%'; }, 80);
+  });
+
+  /* recent attempts list */
+  const list = document.getElementById('attempts');
+  list.innerHTML = '';
+  attempts.slice(0, 12).forEach(a => {
+    const row = document.createElement('div');
+    row.className = 'att';
+    row.innerHTML =
+      `<div class="att-left"><span class="att-sec">${a.section}</span>` +
+      `<span class="att-date">${fmtDate(a.ts)}</span></div>` +
+      `<div><span style="color:var(--muted)">${a.score}/${a.total}</span> &nbsp; ` +
+      `<span class="att-pct">${Math.round(a.pct)}%</span></div>`;
+    list.appendChild(row);
+  });
+}
+
+load();
+</script>
+</body>
+</html>
