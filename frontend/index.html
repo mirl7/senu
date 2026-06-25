@@ -248,6 +248,17 @@
       border: 1px solid rgba(239,68,68,0.25); border-radius: 8px; padding: 9px 12px; display: none;
     }
     .modal-error.show { display: block; }
+    .modal-info {
+      font-size: 0.83rem; color: var(--gold); background: rgba(253,195,95,0.08);
+      border: 1px solid rgba(253,195,95,0.3); border-radius: 8px; padding: 9px 12px; display: none;
+    }
+    .modal-info.show { display: block; }
+    .modal-link {
+      background: none; border: none; color: var(--muted); font-family: var(--font);
+      font-size: 0.82rem; cursor: pointer; text-decoration: underline; padding: 2px; margin-top: 2px;
+      align-self: flex-start;
+    }
+    .modal-link:hover { color: var(--text); }
 
     /* ═══════════════ RESPONSIVE ═══════════════ */
     @media (max-width: 860px) {
@@ -375,14 +386,17 @@
     <div id="form-login">
       <div class="modal-form">
         <div class="modal-error" id="login-error"></div>
+        <div class="modal-info" id="login-info"></div>
         <input class="modal-input" id="login-email" type="email" placeholder="Email" />
         <input class="modal-input" id="login-password" type="password" placeholder="Password" />
         <button class="modal-submit" onclick="doLogin()">Log in →</button>
+        <button type="button" class="modal-link" onclick="doForgot()">Forgot password?</button>
       </div>
     </div>
     <div id="form-register" style="display:none">
       <div class="modal-form">
         <div class="modal-error" id="register-error"></div>
+        <div class="modal-info" id="register-info"></div>
         <input class="modal-input" id="reg-username" type="text" placeholder="Username" />
         <input class="modal-input" id="reg-email" type="email" placeholder="Email" />
         <input class="modal-input" id="reg-password" type="password" placeholder="Password (min 6 chars)" />
@@ -482,9 +496,15 @@ document.getElementById('auth-modal').addEventListener('click', e => {
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim(), pw = document.getElementById('login-password').value;
   const err = document.getElementById('login-error'); err.classList.remove('show');
+  const info = document.getElementById('login-info'); info.classList.remove('show');
   try {
     const r = await wfetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password: pw }) });
     const d = await r.json();
+    if (r.status === 403) {
+      info.innerHTML = (d.detail || 'Please verify your email.') +
+        ' <a href="#" onclick="doResend();return false" style="color:var(--gold)">Resend email</a>';
+      info.classList.add('show'); return;
+    }
     if (!r.ok) { err.textContent = d.detail || 'Login failed'; err.classList.add('show'); return; }
     setSession(d.token, { username: d.username, points: d.points }); closeModal();
   } catch { err.textContent = 'Could not reach the server. Is the backend running?'; err.classList.add('show'); }
@@ -494,15 +514,41 @@ async function doRegister() {
         em = document.getElementById('reg-email').value.trim(),
         pw = document.getElementById('reg-password').value;
   const err = document.getElementById('register-error'); err.classList.remove('show');
+  const info = document.getElementById('register-info'); info.classList.remove('show');
   if (!un) { err.textContent = 'Username is required'; err.classList.add('show'); return; }
   try {
     const r = await wfetch(`${API}/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username: un, email: em, password: pw }) });
     const d = await r.json();
     if (!r.ok) { err.textContent = d.detail || 'Registration failed'; err.classList.add('show'); return; }
+    if (d.verification_required) {
+      info.textContent = `Account created! We sent a verification link to ${em}. Confirm it, then log in.`;
+      info.classList.add('show');
+      document.getElementById('reg-password').value = '';
+      return;
+    }
     const lr = await wfetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email: em, password: pw }) });
     const ld = await lr.json();
     if (lr.ok) { setSession(ld.token, { username: ld.username, points: ld.points }); closeModal(); } else switchTab('login');
   } catch { err.textContent = 'Could not reach the server. Is the backend running?'; err.classList.add('show'); }
+}
+async function doForgot() {
+  const email = document.getElementById('login-email').value.trim();
+  const err = document.getElementById('login-error'); err.classList.remove('show');
+  const info = document.getElementById('login-info'); info.classList.remove('show');
+  if (!email) { err.textContent = 'Enter your email above first, then click "Forgot password?"'; err.classList.add('show'); return; }
+  try {
+    await wfetch(`${API}/forgot`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email }) });
+    info.textContent = 'If that email is registered, a reset link is on its way. Check your inbox.';
+    info.classList.add('show');
+  } catch { err.textContent = 'Could not reach the server.'; err.classList.add('show'); }
+}
+async function doResend() {
+  const email = document.getElementById('login-email').value.trim();
+  const info = document.getElementById('login-info');
+  if (!email) return;
+  try { await wfetch(`${API}/resend`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email }) }); } catch {}
+  info.textContent = 'Verification email sent. Check your inbox.';
+  info.classList.add('show');
 }
 async function doLogout() {
   const t = getToken();

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SENU — Verify email</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--gold:#fdc35f;--bg:#080705;--panel:#121110;--text:#f4efe4;--muted:#8a8278;--border:#232019;--green:#6ee7a0;--red:#fca5a5;--font:'Space Grotesk',system-ui,sans-serif}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .card{max-width:420px;width:100%;text-align:center;background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:48px 38px}
+    .logo-name{font-family:'Times New Roman',Times,serif;font-size:2rem;font-weight:700;text-transform:lowercase;margin-bottom:22px;display:inline-block}
+    .spinner{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;margin:6px auto 20px;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    h1{font-size:1.4rem;font-weight:700;margin-bottom:10px}
+    p{color:var(--muted);line-height:1.6;margin-bottom:24px}
+    .ok h1{color:var(--green)} .err h1{color:var(--red)}
+    .btn{display:inline-block;background:var(--gold);color:#161310;font-family:var(--font);font-weight:600;font-size:0.92rem;padding:12px 24px;border-radius:999px;text-decoration:none;transition:transform .15s}
+    .btn:hover{transform:translateY(-1px)}
+    .link{color:var(--gold);text-decoration:none;font-size:0.9rem}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="logo-name">senu</span>
+
+    <div id="loading">
+      <div class="spinner"></div>
+      <p>Verifying your email…</p>
+    </div>
+
+    <div id="ok" class="ok hidden">
+      <h1>Email verified ✓</h1>
+      <p>Your account is active. You can now log in and start practising.</p>
+      <a href="index.html" class="btn">Go to SENU →</a>
+    </div>
+
+    <div id="err" class="err hidden">
+      <h1>Link not valid</h1>
+      <p id="err-msg">This verification link is invalid or has expired. Try logging in to request a new one.</p>
+      <a href="index.html" class="link">Back to home →</a>
+    </div>
+  </div>
+
+  <script>
+    const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:')
+      ? 'http://localhost:8000'
+      : 'https://senu-api.onrender.com';
+
+    function show(id){ document.getElementById(id).classList.remove('hidden'); }
+    function hide(id){ document.getElementById(id).classList.add('hidden'); }
+
+    (async function(){
+      const token = new URLSearchParams(location.search).get('token');
+      if(!token){ hide('loading'); show('err'); return; }
+      try{
+        const r = await fetch(`${API}/verify?token=${encodeURIComponent(token)}`);
+        hide('loading');
+        if(r.ok){ show('ok'); }
+        else{
+          const d = await r.json().catch(()=>({}));
+          if(d.detail) document.getElementById('err-msg').textContent = d.detail + ' Try logging in to request a new link.';
+          show('err');
+        }
+      }catch(e){
+        hide('loading');
+        document.getElementById('err-msg').textContent = 'Could not reach the server. It may be waking up — try the link again in a minute.';
+        show('err');
+      }
+    })();
+  </script>
+</body>
+</html>
