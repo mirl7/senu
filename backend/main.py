@@ -37,6 +37,9 @@ EMAIL_FROM = os.environ.get("EMAIL_FROM", "SENU <onboarding@resend.dev>")
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5500").rstrip("/")
 EMAIL_ENABLED = bool(RESEND_API_KEY)
 
+# Секретный ключ для просмотра списка пользователей (/admin/users?key=...)
+ADMIN_KEY = os.environ.get("ADMIN_KEY", "")
+
 
 # ─────────────────────── МОДЕЛИ ТАБЛИЦ ───────────────────────
 
@@ -546,6 +549,28 @@ def get_stats():
             "best_score_pct": round(best or 0, 1),
             "registered_users": users,
             "questions_in_bank": qs,
+        }
+    finally:
+        db.close()
+
+
+@app.get("/admin/users")
+def admin_users(key: str = ""):
+    """Список зарегистрированных пользователей. Доступ только по секретному ключу
+    ADMIN_KEY (переменная окружения). Без него или с неверным ключом — 403."""
+    if not ADMIN_KEY or not secrets.compare_digest(key, ADMIN_KEY):
+        raise HTTPException(403, "Forbidden")
+    db = SessionLocal()
+    try:
+        rows = db.query(User).order_by(User.id.desc()).all()
+        return {
+            "count": len(rows),
+            "users": [
+                {"id": u.id, "username": u.username, "email": u.email,
+                 "verified": bool(u.verified), "points": u.points,
+                 "created_at": u.created_at}
+                for u in rows
+            ],
         }
     finally:
         db.close()
