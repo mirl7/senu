@@ -344,7 +344,7 @@ def login(body: LoginIn):
         user = db.query(User).filter(User.email == email).first()
         if not user or not verify_password(body.password, user.password_hash):
             raise HTTPException(401, "Invalid email or password")
-        if not user.verified:
+        if EMAIL_ENABLED and not user.verified:
             raise HTTPException(403, "Please verify your email — check your inbox.")
         token = secrets.token_urlsafe(32)
         db.add(AuthSession(
