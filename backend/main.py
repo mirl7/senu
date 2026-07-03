@@ -554,6 +554,26 @@ def get_stats():
         db.close()
 
 
+@app.get("/mock")
+def mock():
+    """Весь мок целиком: все вопросы по порядку (CT, затем MA), БЕЗ правильных
+    ответов. Ответы проверяются отдельно через /questions/answer."""
+    db = SessionLocal()
+    try:
+        rows = db.query(Question).order_by(Question.section, Question.id).all()
+        return {
+            "count": len(rows),
+            "questions": [
+                {"id": r.id, "section": r.section, "topic": r.topic,
+                 "difficulty": r.difficulty, "text": r.text,
+                 "options": json.loads(r.options)}
+                for r in rows
+            ],
+        }
+    finally:
+        db.close()
+
+
 @app.get("/admin/users")
 def admin_users(key: str = ""):
     """Список зарегистрированных пользователей. Доступ только по секретному ключу

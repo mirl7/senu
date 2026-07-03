@@ -578,23 +578,23 @@
 <!-- START -->
 <div class="screen active" id="start-screen">
   <div class="start-card">
-    <div class="start-tag">NUET · Adaptive Practice</div>
+    <div class="start-tag">NUET · Mock Test 1</div>
     <h1>Ready to practice?</h1>
-    <p>Choose a section, enter your name, and start. Questions adapt to your level as you go.</p>
+    <p>One full mock — Critical Thinking and Mathematics in a single run, with an instant explanation after every question.</p>
 
     <div class="start-meta">
-      <div class="meta-item"><span class="meta-val">5</span><span class="meta-lbl">Questions</span></div>
-      <div class="meta-item"><span class="meta-val">~8</span><span class="meta-lbl">Minutes</span></div>
-      <div class="meta-item"><span class="meta-val">AI</span><span class="meta-lbl">Adaptive</span></div>
-    </div>
-
-    <div class="section-select">
-      <button class="sect-btn active" id="btn-ct" onclick="selectSection('CT')">Critical Thinking</button>
-      <button class="sect-btn"        id="btn-ma" onclick="selectSection('MA')">Mathematics</button>
+      <div class="meta-item"><span class="meta-val" id="meta-qcount">—</span><span class="meta-lbl">Questions</span></div>
+      <div class="meta-item"><span class="meta-val">CT · MA</span><span class="meta-lbl">Sections</span></div>
+      <div class="meta-item"><span class="meta-val">Free</span><span class="meta-lbl">Access</span></div>
     </div>
 
     <input class="name-input" id="user-name" type="text" placeholder="Your name (optional)" />
-    <button class="btn-start" onclick="startQuiz()">Start Practice →</button>
+    <button class="btn-start" onclick="startQuiz()">Start →</button>
+
+    <p style="margin-top:18px;font-size:0.82rem;color:var(--muted);line-height:1.6">
+      Any questions, or want to send us your results? Message
+      <a href="https://t.me/senuteam" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">@senuteam</a> on Telegram.
+    </p>
   </div>
 </div>
 
@@ -639,16 +639,14 @@
       <button class="btn-retry" onclick="retryQuiz()">Try Again</button>
       <a href="index.html" class="btn-home">← Home</a>
     </div>
+    <p style="margin-top:18px;font-size:0.82rem;color:var(--muted);line-height:1.6">
+      Send your result or ask anything on Telegram
+      <a href="https://t.me/senuteam" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">@senuteam</a>
+    </p>
   </div>
 </div>
 
 <script>
-/* ============================================================
-   SENU — Adaptive Practice (backend-driven)
-   Вопросы и проверка ответов теперь на сервере.
-   В коде страницы правильных ответов больше НЕТ.
-============================================================ */
-
 const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:')
   ? 'http://localhost:8000'
   : 'https://senu-api.onrender.com';
@@ -661,25 +659,17 @@ function wakeStop() { _wakeN = Math.max(0,_wakeN-1);
   if (_wakeN===0){ clearTimeout(_wakeT); _wakeT=null; var e=document.getElementById('wake-toast'); if(e) e.classList.remove('show'); } }
 function wfetch(...a) { wakeStart(); return fetch(...a).finally(wakeStop); }
 
-const QUIZ_LENGTH   = 8;
-const START_ABILITY = 2.0;
-const STEP          = 0.5;
 const DIFF_LABEL = { 1: 'Easy', 2: 'Medium', 3: 'Hard' };
+const SECTION_NAME = { CT: 'Critical Thinking', MA: 'Mathematics' };
 
-/* ---------- состояние ---------- */
-let current = -1;          // номер текущего вопроса (с 0)
-let askedIds = [];         // id заданных вопросов (чтобы не повторялись)
-let askedDiff = [];        // сложности заданных (для разбора в конце)
-let curQuestion = null;    // текущий вопрос с сервера
+/* ---------- состояние: весь мок целиком ---------- */
+let questions = [];       // все вопросы мока (с сервера, без ответов)
+let TOTAL = 0;
+let current = -1;
+let curQuestion = null;
 let score = 0, answered = false, results = [];
-let ability = START_ABILITY, perTopic = {};
-let userName = '', section = 'CT';
-
-function selectSection(s) {
-  section = s;
-  document.getElementById('btn-ct').classList.toggle('active', s === 'CT');
-  document.getElementById('btn-ma').classList.toggle('active', s === 'MA');
-}
+let perTopic = {};
+let userName = '';
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
@@ -688,47 +678,39 @@ function showScreen(id) {
 
 async function startQuiz() {
   userName = document.getElementById('user-name').value.trim() || 'Student';
-  current = -1; askedIds = []; askedDiff = []; curQuestion = null;
-  score = 0; answered = false; results = [];
-  ability = START_ABILITY; perTopic = {};
-  document.getElementById('q-section-pill').textContent = section === 'CT' ? 'Critical Thinking' : 'Mathematics';
+  current = -1; curQuestion = null; score = 0; answered = false; results = []; perTopic = {};
   document.getElementById('nav-score').textContent = '';
   showScreen('quiz-screen');
-  await loadNext();
-}
-
-/* запросить у сервера следующий вопрос под текущий уровень */
-async function loadNext() {
+  document.getElementById('topic-badge').textContent = 'Loading…';
+  document.getElementById('q-text').textContent = 'Preparing your mock…';
+  document.getElementById('options').innerHTML = '';
   try {
-    const url = `${API}/questions/next?section=${encodeURIComponent(section)}`
-              + `&ability=${ability}&exclude=${askedIds.join(',')}`;
-    const res = await wfetch(url);
-    const q = await res.json();
-    if (q.done || !q.id) { showResults(); return; }
-    curQuestion = q;
-    askedIds.push(q.id);
-    askedDiff.push(q.difficulty);
-    current++;
-    renderQuestion();
-  } catch (e) {
-    showConnError();
-  }
+    const res = await wfetch(`${API}/mock`);
+    const data = await res.json();
+    questions = data.questions || [];
+    TOTAL = questions.length;
+  } catch (e) { showConnError(); return; }
+  if (!TOTAL) { showConnError(); return; }
+  current = 0;
+  renderQuestion();
 }
 
 function showConnError() {
   document.getElementById('topic-badge').textContent = 'Connection error';
   document.getElementById('q-text').textContent =
-    'Could not reach the server. Make sure the backend is running (uvicorn main:app --reload) and try again.';
+    'Could not reach the server. It may be waking up — go back and try again in a minute.';
   document.getElementById('options').innerHTML = '';
   document.getElementById('btn-next').style.display = 'none';
 }
 
 function renderQuestion() {
-  const q = curQuestion;
+  const q = questions[current];
+  curQuestion = q;
   answered = false;
 
-  document.getElementById('prog-fill').style.width = `${(current / QUIZ_LENGTH) * 100}%`;
-  document.getElementById('q-count').textContent = `${current + 1} / ${QUIZ_LENGTH}`;
+  document.getElementById('prog-fill').style.width = `${(current / TOTAL) * 100}%`;
+  document.getElementById('q-section-pill').textContent = SECTION_NAME[q.section] || q.section;
+  document.getElementById('q-count').textContent = `${current + 1} / ${TOTAL}`;
   document.getElementById('topic-badge').textContent = `${q.topic} · ${DIFF_LABEL[q.difficulty]}`;
   document.getElementById('q-text').textContent = q.text;
   document.getElementById('btn-next').style.display = 'none';
@@ -748,7 +730,6 @@ function renderQuestion() {
   });
 }
 
-/* отправить выбор на сервер для проверки */
 async function selectOpt(idx) {
   if (answered) return;
   answered = true;
@@ -765,10 +746,7 @@ async function selectOpt(idx) {
       body: JSON.stringify({ question_id: curQuestion.id, choice: idx }),
     });
     data = await res.json();
-  } catch (e) {
-    showConnError();
-    return;
-  }
+  } catch (e) { showConnError(); return; }
 
   const topic = curQuestion.topic;
   if (!perTopic[topic]) perTopic[topic] = { correct: 0, total: 0 };
@@ -780,25 +758,24 @@ async function selectOpt(idx) {
     opts[idx].classList.add('correct');
     fb.className = 'feedback fb-correct show';
     fb.textContent = '✓ Correct. ' + data.explanation;
-    ability = Math.min(3.2, ability + STEP);
-    results.push({ correct: true });
+    results.push({ correct: true, difficulty: curQuestion.difficulty });
   } else {
     opts[idx].classList.add('wrong');
     if (opts[data.correct_index]) opts[data.correct_index].classList.add('correct');
     fb.className = 'feedback fb-wrong show';
     fb.textContent = '✗ Incorrect. ' + data.explanation;
-    ability = Math.max(0.8, ability - STEP);
-    results.push({ correct: false });
+    results.push({ correct: false, difficulty: curQuestion.difficulty });
   }
 
   const nb = document.getElementById('btn-next');
   nb.style.display = 'inline-flex';
-  nb.textContent = current === QUIZ_LENGTH - 1 ? 'See Results →' : 'Next →';
+  nb.textContent = current === TOTAL - 1 ? 'See Results →' : 'Next →';
 }
 
-async function nextQuestion() {
-  if (current >= QUIZ_LENGTH - 1) { showResults(); return; }
-  await loadNext();
+function nextQuestion() {
+  if (current >= TOTAL - 1) { showResults(); return; }
+  current++;
+  renderQuestion();
 }
 
 async function showResults() {
@@ -812,7 +789,7 @@ async function showResults() {
     if (token) headers['Authorization'] = `Bearer ${token}`;
     const res = await wfetch(`${API}/submit`, {
       method: 'POST', headers,
-      body: JSON.stringify({ name: userName, score, total, section })
+      body: JSON.stringify({ name: userName, score, total, section: 'Mock 1' })
     });
     if (res.ok && token) {
       const data = await res.json();
@@ -842,16 +819,16 @@ async function showResults() {
   document.getElementById('nav-score').textContent = `${score}/${total}`;
 
   let level;
-  if (ability >= 2.5) level = 'Advanced';
-  else if (ability >= 1.7) level = 'Intermediate';
+  if (pct >= 0.8) level = 'Advanced';
+  else if (pct >= 0.6) level = 'Intermediate';
   else level = 'Foundational';
 
   let title, msg;
-  if (pct === 1)      { title = 'Perfect score!';   msg = 'Outstanding — you handled the hardest questions we threw at you.'; }
-  else if (pct >= 0.8){ title = 'Strong result';    msg = "You're close to top performance. Review any missed questions carefully."; }
+  if (pct === 1)      { title = 'Perfect score!';   msg = 'Outstanding — a clean sweep of the whole mock.'; }
+  else if (pct >= 0.8){ title = 'Strong result';    msg = "You're close to top performance. Review the ones you missed."; }
   else if (pct >= 0.6){ title = 'Good progress';    msg = 'Solid foundation. Focus on the weak topics below.'; }
-  else if (pct >= 0.4){ title = 'Keep practising';  msg = 'NUET takes practice. Read the explanations and try again.'; }
-  else                { title = 'More work needed'; msg = "Don't worry — study the explanations and revisit the section."; }
+  else if (pct >= 0.4){ title = 'Keep practising';  msg = 'NUET takes practice. Read the explanations and run it again.'; }
+  else                { title = 'More work needed'; msg = "Don't worry — study the explanations and try the mock again."; }
   document.getElementById('res-title').textContent = title;
   document.getElementById('res-msg').textContent = msg;
 
@@ -886,7 +863,7 @@ async function showResults() {
   results.forEach((r, i) => {
     const row = document.createElement('div');
     row.className = 'bd-row';
-    const diff = DIFF_LABEL[askedDiff[i]] || '';
+    const diff = DIFF_LABEL[r.difficulty] || '';
     row.innerHTML = `<span class="bd-dot ${r.correct ? 'c' : 'w'}"></span><span>Question ${i + 1} — ${r.correct ? 'Correct' : 'Incorrect'} · ${diff}</span>`;
     bd.appendChild(row);
   });
@@ -894,10 +871,14 @@ async function showResults() {
 
 function retryQuiz() { startQuiz(); }
 
-/* стартовый экран: число вопросов + данные залогиненного пользователя */
-(function () {
-  const mv = document.querySelector('.start-meta .meta-val');
-  if (mv) mv.textContent = QUIZ_LENGTH;
+/* стартовый экран: показать число вопросов + данные залогиненного пользователя */
+(async function () {
+  try {
+    const res = await wfetch(`${API}/stats`);
+    const d = await res.json();
+    const el = document.getElementById('meta-qcount');
+    if (el && d.questions_in_bank != null) el.textContent = d.questions_in_bank;
+  } catch (e) {}
 
   const user = JSON.parse(localStorage.getItem('senu_user') || 'null');
   if (user) {
