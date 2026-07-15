@@ -574,6 +574,121 @@ def mock():
         db.close()
 
 
+class QuestionIn(BaseModel):
+    section: str          # "CT" или "MA"
+    topic: str
+    difficulty: int       # 1..3
+    text: str
+    options: list         # 2..6 вариантов
+    answer: int           # индекс правильного (0 = A)
+    explanation: str = ""
+
+
+def check_admin(key: str):
+    if not ADMIN_KEY or not secrets.compare_digest(key, ADMIN_KEY):
+        raise HTTPException(403, "Forbidden")
+
+
+def validate_question(q: QuestionIn):
+    if q.section not in ("CT", "MA"):
+        raise HTTPException(400, "section must be 'CT' or 'MA'")
+    if not q.topic.strip():
+        raise HTTPException(400, "topic is required")
+    if q.difficulty not in (1, 2, 3):
+        raise HTTPException(400, "difficulty must be 1, 2 or 3")
+    if not q.text.strip():
+        raise HTTPException(400, "text is required")
+    if not isinstance(q.options, list) or not (2 <= len(q.options) <= 6):
+        raise HTTPException(400, "options must be a list of 2-6 items")
+    if any(not str(o).strip() for o in q.options):
+        raise HTTPException(400, "options must not be empty")
+    if not (0 <= q.answer < len(q.options)):
+        raise HTTPException(400, f"answer must be an index 0..{len(q.options)-1}")
+
+
+@app.post("/admin/questions")
+def admin_add_question(body: QuestionIn, key: str = ""):
+    """Добавить один вопрос в банк (нужен ADMIN_KEY)."""
+    check_admin(key)
+    validate_question(body)
+    db = SessionLocal()
+    try:
+        q = Question(
+            section=body.section, topic=body.topic.strip(),
+            difficulty=body.difficulty, text=body.text.strip(),
+            options=json.dumps([str(o).strip() for o in body.options], ensure_ascii=False),
+            answer=body.answer, explanation=body.explanation.strip(),
+        )
+        db.add(q)
+        db.commit()
+        db.refresh(q)
+        return {"status": "ok", "id": q.id}
+    finally:
+        db.close()
+
+
+@app.post("/admin/questions/bulk")
+def admin_add_questions_bulk(body: list[QuestionIn], key: str = ""):
+    """Добавить сразу список вопросов (JSON-массив). Всё или ничего:
+    если хоть один вопрос некорректен — не сохраняется ни один."""
+    check_admin(key)
+    for i, q in enumerate(body):
+        try:
+            validate_question(q)
+        except HTTPException as e:
+            raise HTTPException(400, f"question #{i+1}: {e.detail}")
+    db = SessionLocal()
+    try:
+        for q in body:
+            db.add(Question(
+                section=q.section, topic=q.topic.strip(),
+                difficulty=q.difficulty, text=q.text.strip(),
+                options=json.dumps([str(o).strip() for o in q.options], ensure_ascii=False),
+                answer=q.answer, explanation=q.explanation.strip(),
+            ))
+        db.commit()
+        return {"status": "ok", "added": len(body)}
+    finally:
+        db.close()
+
+
+@app.get("/admin/questions")
+def admin_list_questions(key: str = ""):
+    """Весь банк вопросов С ответами — для управления (нужен ADMIN_KEY)."""
+    check_admin(key)
+    db = SessionLocal()
+    try:
+        rows = db.query(Question).order_by(Question.section, Question.id).all()
+        return {
+            "count": len(rows),
+            "questions": [
+                {"id": r.id, "section": r.section, "topic": r.topic,
+                 "difficulty": r.difficulty, "text": r.text,
+                 "options": json.loads(r.options), "answer": r.answer,
+                 "explanation": r.explanation}
+                for r in rows
+            ],
+        }
+    finally:
+        db.close()
+
+
+@app.delete("/admin/questions/{qid}")
+def admin_delete_question(qid: int, key: str = ""):
+    """Удалить вопрос по id (нужен ADMIN_KEY)."""
+    check_admin(key)
+    db = SessionLocal()
+    try:
+        row = db.query(Question).filter(Question.id == qid).first()
+        if not row:
+            raise HTTPException(404, "Question not found")
+        db.delete(row)
+        db.commit()
+        return {"status": "ok", "deleted": qid}
+    finally:
+        db.close()
+
+
 @app.get("/admin/users")
 def admin_users(key: str = ""):
     """Список зарегистрированных пользователей. Доступ только по секретному ключу
