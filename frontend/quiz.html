@@ -541,13 +541,38 @@
     .q-pill, .start-tag, .nav-pts-pill, .sect-btn.active { color: #f0c674; }
     .feedback.fb-correct { color: #6ee7a0; }
     .feedback.fb-wrong   { color: #fca5a5; }
-    /* Текст заданий — тот же шрифт, что и варианты ответа (Space Grotesk) */
+    /* ТЕКСТ ЗАДАНИЙ — тот же шрифт, что и варианты ответа (Space Grotesk) */
     .question-text {
       font-family: var(--tnr);
       color: var(--text);
       font-size: 1.02rem;
       line-height: 1.78;
     }
+
+    .hidden { display: none !important; }
+
+    /* ══ QUESTION NAVIGATION GRID ══ */
+    .qnav {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      max-width: 760px; margin: 0 auto 14px; padding: 0 4px;
+    }
+    .qnav button {
+      width: 38px; height: 34px; border-radius: 9px;
+      background: var(--bg-2, #121110); border: 1.5px solid var(--border);
+      color: var(--muted); font-family: var(--tnr); font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: border-color .15s, color .15s, transform .1s;
+    }
+    .qnav button:hover { border-color: var(--gold); color: var(--text); transform: translateY(-1px); }
+    .qnav button.answered { background: rgba(253,195,95,0.14); border-color: rgba(253,195,95,0.45); color: var(--gold); }
+    .qnav button.current { border-color: var(--gold); color: #161310; background: var(--gold); }
+    .btn-finish {
+      display: none; margin: 4px auto 0;
+      padding: 10px 22px; background: none; border: 1.5px solid var(--gold);
+      color: var(--gold); font-family: var(--tnr); font-size: 0.85rem; font-weight: 600;
+      border-radius: 999px; cursor: pointer; transition: background .15s, color .15s;
+    }
+    .btn-finish.show { display: block; }
+    .btn-finish:hover { background: var(--gold); color: #161310; }
     /* server cold-start hint */
     .wake-toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px);
       background:var(--panel,#121110); border:1px solid var(--border,#232019); color:var(--text,#f4efe4);
@@ -588,8 +613,15 @@
       <div class="meta-item"><span class="meta-val">Free</span><span class="meta-lbl">Access</span></div>
     </div>
 
-    <input class="name-input" id="user-name" type="text" placeholder="Your name (optional)" />
-    <button class="btn-start" onclick="startQuiz()">Start →</button>
+    <div id="start-controls">
+      <input class="name-input" id="user-name" type="text" placeholder="Your name (optional)" />
+      <button class="btn-start" onclick="startQuiz()">Start →</button>
+    </div>
+
+    <div id="start-gate" class="hidden">
+      <p style="margin:6px 0 16px;color:var(--muted)">The mock is available to registered users — it takes a minute to sign up, and your results and progress will be saved.</p>
+      <a href="index.html" class="btn-start" style="display:inline-block;text-decoration:none">Sign up / Log in →</a>
+    </div>
 
     <p style="margin-top:18px;font-size:0.82rem;color:var(--muted);line-height:1.6">
       Any questions, or want to send us your results? Message
@@ -604,6 +636,7 @@
     <div class="progress-bar-fill" id="prog-fill" style="width:0%"></div>
   </div>
   <div class="quiz-inner">
+    <div class="qnav" id="qnav"></div>
     <div class="quiz-card">
       <div class="quiz-card-head">
         <span class="q-pill" id="q-section-pill">CT</span>
@@ -619,6 +652,7 @@
         <button class="btn-next" id="btn-next" onclick="nextQuestion()" style="display:none">Next →</button>
       </div>
     </div>
+    <button class="btn-finish" id="btn-finish" onclick="showResults()">Finish & see results →</button>
   </div>
 </div>
 
@@ -661,29 +695,40 @@ function wfetch(...a) { wakeStart(); return fetch(...a).finally(wakeStop); }
 
 const DIFF_LABEL = { 1: 'Easy', 2: 'Medium', 3: 'Hard' };
 const SECTION_NAME = { CT: 'Critical Thinking', MA: 'Mathematics' };
+const LETTERS = ['A','B','C','D','E','F'];
 
-/* ---------- состояние: весь мок целиком ---------- */
-let questions = [];       // все вопросы мока (с сервера, без ответов)
+/* ---------- состояние ---------- */
+let questions = [];   // все вопросы мока
+let state = [];       // по каждому вопросу: {answered, choice, correct, correct_index, explanation}
 let TOTAL = 0;
-let current = -1;
-let curQuestion = null;
-let score = 0, answered = false, results = [];
-let perTopic = {};
+let current = 0;
 let userName = '';
+let finished = false;
+
+function getToken() { return localStorage.getItem('senu_token'); }
+function getUser()  { return JSON.parse(localStorage.getItem('senu_user') || 'null'); }
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
+/* ═══ мок доступен только зарегистрированным ═══ */
+function applyGate() {
+  const signedIn = !!getToken();
+  document.getElementById('start-controls').classList.toggle('hidden', !signedIn);
+  document.getElementById('start-gate').classList.toggle('hidden', signedIn);
+}
+
 async function startQuiz() {
+  if (!getToken()) { applyGate(); return; }   // защита на всякий случай
   userName = document.getElementById('user-name').value.trim() || 'Student';
-  current = -1; curQuestion = null; score = 0; answered = false; results = []; perTopic = {};
-  document.getElementById('nav-score').textContent = '';
+  current = 0; finished = false;
   showScreen('quiz-screen');
   document.getElementById('topic-badge').textContent = 'Loading…';
   document.getElementById('q-text').textContent = 'Preparing your mock…';
   document.getElementById('options').innerHTML = '';
+  document.getElementById('qnav').innerHTML = '';
   try {
     const res = await wfetch(`${API}/mock`);
     const data = await res.json();
@@ -691,8 +736,9 @@ async function startQuiz() {
     TOTAL = questions.length;
   } catch (e) { showConnError(); return; }
   if (!TOTAL) { showConnError(); return; }
-  current = 0;
-  renderQuestion();
+  state = questions.map(() => ({ answered:false, choice:null, correct:null, correct_index:null, explanation:'' }));
+  buildNav();
+  renderQuestion(0);
 }
 
 function showConnError() {
@@ -703,38 +749,78 @@ function showConnError() {
   document.getElementById('btn-next').style.display = 'none';
 }
 
-function renderQuestion() {
-  const q = questions[current];
-  curQuestion = q;
-  answered = false;
-
-  document.getElementById('prog-fill').style.width = `${(current / TOTAL) * 100}%`;
-  document.getElementById('q-section-pill').textContent = SECTION_NAME[q.section] || q.section;
-  document.getElementById('q-count').textContent = `${current + 1} / ${TOTAL}`;
-  document.getElementById('topic-badge').textContent = `${q.topic} · ${DIFF_LABEL[q.difficulty]}`;
-  document.getElementById('q-text').textContent = q.text;
-  document.getElementById('btn-next').style.display = 'none';
-
-  const fb = document.getElementById('feedback');
-  fb.className = 'feedback'; fb.textContent = '';
-
-  const opts = document.getElementById('options');
-  opts.innerHTML = '';
-  const letters = ['A','B','C','D','E'];
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'opt';
-    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span class="opt-text">${opt}</span>`;
-    btn.addEventListener('click', () => selectOpt(i));
-    opts.appendChild(btn);
+/* ═══ навигация по вопросам ═══ */
+function buildNav() {
+  const nav = document.getElementById('qnav');
+  nav.innerHTML = '';
+  questions.forEach((q, i) => {
+    const b = document.createElement('button');
+    b.textContent = i + 1;
+    b.title = `${SECTION_NAME[q.section] || q.section} · Q${i+1}`;
+    b.addEventListener('click', () => renderQuestion(i));
+    nav.appendChild(b);
   });
 }
 
-async function selectOpt(idx) {
-  if (answered) return;
-  answered = true;
-  const opts = document.querySelectorAll('.opt');
+function updateNavStates() {
+  const btns = document.querySelectorAll('#qnav button');
+  btns.forEach((b, i) => {
+    b.classList.toggle('answered', state[i].answered);
+    b.classList.toggle('current', i === current);
+  });
+  const answeredCount = state.filter(s => s.answered).length;
+  document.getElementById('prog-fill').style.width = `${(answeredCount / TOTAL) * 100}%`;
+  document.getElementById('q-count').textContent = `${answeredCount} / ${TOTAL} answered`;
+  document.getElementById('btn-finish').classList.toggle('show', answeredCount === TOTAL && !finished);
+}
+
+function renderQuestion(i) {
+  current = i;
+  const q = questions[i];
+  const st = state[i];
+
+  document.getElementById('q-section-pill').textContent = SECTION_NAME[q.section] || q.section;
+  document.getElementById('topic-badge').textContent = `Q${i+1} · ${q.topic} · ${DIFF_LABEL[q.difficulty]}`;
+  document.getElementById('q-text').textContent = q.text;
+
   const fb = document.getElementById('feedback');
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="opt-letter">${LETTERS[idx]}</span><span class="opt-text">${opt}</span>`;
+    if (st.answered) {
+      btn.classList.add('disabled');
+      if (idx === st.choice) btn.classList.add(st.correct ? 'correct' : 'wrong', 'selected');
+      if (!st.correct && idx === st.correct_index) btn.classList.add('correct');
+    } else {
+      btn.addEventListener('click', () => selectOpt(idx));
+    }
+    opts.appendChild(btn);
+  });
+
+  if (st.answered) {
+    fb.className = 'feedback show ' + (st.correct ? 'fb-correct' : 'fb-wrong');
+    fb.textContent = (st.correct ? '✓ Correct. ' : '✗ Incorrect. ') + st.explanation;
+  } else {
+    fb.className = 'feedback'; fb.textContent = '';
+  }
+
+  const nb = document.getElementById('btn-next');
+  nb.style.display = (current < TOTAL - 1) ? 'inline-flex' : 'none';
+  nb.textContent = 'Next →';
+
+  updateNavStates();
+}
+
+async function selectOpt(idx) {
+  const st = state[current];
+  if (st.answered) return;
+  st.answered = true; st.choice = idx;
+
+  const opts = document.querySelectorAll('.opt');
   opts.forEach(o => o.classList.add('disabled'));
   opts[idx].classList.add('selected');
 
@@ -743,48 +829,33 @@ async function selectOpt(idx) {
     const res = await wfetch(`${API}/questions/answer`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question_id: curQuestion.id, choice: idx }),
+      body: JSON.stringify({ question_id: questions[current].id, choice: idx }),
     });
     data = await res.json();
-  } catch (e) { showConnError(); return; }
+  } catch (e) { st.answered = false; st.choice = null; showConnError(); return; }
 
-  const topic = curQuestion.topic;
-  if (!perTopic[topic]) perTopic[topic] = { correct: 0, total: 0 };
-  perTopic[topic].total++;
+  st.correct = !!data.correct;
+  st.correct_index = data.correct_index;
+  st.explanation = data.explanation || '';
 
-  if (data.correct) {
-    score++;
-    perTopic[topic].correct++;
-    opts[idx].classList.add('correct');
-    fb.className = 'feedback fb-correct show';
-    fb.textContent = '✓ Correct. ' + data.explanation;
-    results.push({ correct: true, difficulty: curQuestion.difficulty });
-  } else {
-    opts[idx].classList.add('wrong');
-    if (opts[data.correct_index]) opts[data.correct_index].classList.add('correct');
-    fb.className = 'feedback fb-wrong show';
-    fb.textContent = '✗ Incorrect. ' + data.explanation;
-    results.push({ correct: false, difficulty: curQuestion.difficulty });
-  }
-
-  const nb = document.getElementById('btn-next');
-  nb.style.display = 'inline-flex';
-  nb.textContent = current === TOTAL - 1 ? 'See Results →' : 'Next →';
+  renderQuestion(current);
 }
 
 function nextQuestion() {
-  if (current >= TOTAL - 1) { showResults(); return; }
-  current++;
-  renderQuestion();
+  if (current < TOTAL - 1) renderQuestion(current + 1);
 }
 
+function computeScore() { return state.filter(s => s.answered && s.correct).length; }
+
 async function showResults() {
-  document.getElementById('prog-fill').style.width = '100%';
-  const total = results.length;
+  finished = true;
+  const total = TOTAL;
+  const score = computeScore();
   const pct = total ? score / total : 0;
+  document.getElementById('btn-finish').classList.remove('show');
 
   try {
-    const token = localStorage.getItem('senu_token');
+    const token = getToken();
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
     const res = await wfetch(`${API}/submit`, {
@@ -797,7 +868,7 @@ async function showResults() {
         const ptsEl = document.getElementById('nav-pts');
         ptsEl.textContent = `+${data.points_earned} pts earned`;
         ptsEl.style.display = '';
-        const user = JSON.parse(localStorage.getItem('senu_user') || 'null');
+        const user = getUser();
         if (user && data.total_points != null) {
           user.points = data.total_points;
           localStorage.setItem('senu_user', JSON.stringify(user));
@@ -832,6 +903,15 @@ async function showResults() {
   document.getElementById('res-title').textContent = title;
   document.getElementById('res-msg').textContent = msg;
 
+  /* слабые темы по этому моку */
+  const perTopic = {};
+  state.forEach((s, i) => {
+    if (!s.answered) return;
+    const t = questions[i].topic;
+    if (!perTopic[t]) perTopic[t] = { correct: 0, total: 0 };
+    perTopic[t].total++;
+    if (s.correct) perTopic[t].correct++;
+  });
   const weak = Object.entries(perTopic)
     .map(([t, s]) => ({ topic: t, acc: s.correct / s.total }))
     .filter(x => x.acc < 0.6)
@@ -860,19 +940,22 @@ async function showResults() {
   sep.textContent = 'Question Breakdown';
   bd.appendChild(sep);
 
-  results.forEach((r, i) => {
+  state.forEach((s, i) => {
     const row = document.createElement('div');
     row.className = 'bd-row';
-    const diff = DIFF_LABEL[r.difficulty] || '';
-    row.innerHTML = `<span class="bd-dot ${r.correct ? 'c' : 'w'}"></span><span>Question ${i + 1} — ${r.correct ? 'Correct' : 'Incorrect'} · ${diff}</span>`;
+    const diff = DIFF_LABEL[questions[i].difficulty] || '';
+    const status = s.answered ? (s.correct ? 'Correct' : 'Incorrect') : 'Skipped';
+    row.innerHTML = `<span class="bd-dot ${s.answered && s.correct ? 'c' : 'w'}"></span><span>Question ${i + 1} — ${status} · ${diff}</span>`;
     bd.appendChild(row);
   });
 }
 
 function retryQuiz() { startQuiz(); }
 
-/* стартовый экран: показать число вопросов + данные залогиненного пользователя */
+/* стартовый экран: гейт + число вопросов + данные пользователя */
 (async function () {
+  applyGate();
+
   try {
     const res = await wfetch(`${API}/stats`);
     const d = await res.json();
@@ -880,7 +963,7 @@ function retryQuiz() { startQuiz(); }
     if (el && d.questions_in_bank != null) el.textContent = d.questions_in_bank;
   } catch (e) {}
 
-  const user = JSON.parse(localStorage.getItem('senu_user') || 'null');
+  const user = getUser();
   if (user) {
     const ptsEl = document.getElementById('nav-pts');
     ptsEl.textContent = `⭐ ${user.points} pts`;
