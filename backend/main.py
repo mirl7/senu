@@ -51,6 +51,7 @@ class User(Base):
     password_hash = Column(String(255), nullable=False)
     points = Column(Integer, default=0)
     verified = Column(Integer, default=0)
+    telegram = Column(String(80), default="")
     created_at = Column(String(40))
 
 
@@ -99,14 +100,17 @@ Base.metadata.create_all(engine)
 # ─────────────────────── МИГРАЦИЯ ───────────────────────
 
 def migrate():
-    """Добавить колонку verified в существующую таблицу users, если её нет.
-    Существующих пользователей считаем подтверждёнными (чтобы не залочить)."""
+    """Добавить недостающие колонки в существующую таблицу users."""
     cols = [c["name"] for c in inspect(engine).get_columns("users")]
     if "verified" not in cols:
         with engine.begin() as conn:
             conn.execute(text("ALTER TABLE users ADD COLUMN verified INTEGER DEFAULT 0"))
             conn.execute(text("UPDATE users SET verified = 1"))
         print("[migrate] added users.verified (existing users grandfathered)")
+    if "telegram" not in cols:
+        with engine.begin() as conn:
+            conn.execute(text("ALTER TABLE users ADD COLUMN telegram VARCHAR(80) DEFAULT ''"))
+        print("[migrate] added users.telegram")
 
 
 migrate()
@@ -266,6 +270,7 @@ class RegisterIn(BaseModel):
     username: str
     email: str
     password: str
+    telegram: str = ""
 
 
 class LoginIn(BaseModel):
@@ -317,10 +322,12 @@ def register(body: RegisterIn):
             raise HTTPException(400, "User with this email or username already exists")
 
         verified = 0 if EMAIL_ENABLED else 1
+        tg = body.telegram.strip().lstrip("@")[:80]
         user = User(
             username=username, email=email,
             password_hash=hash_password(body.password), points=0,
-            verified=verified, created_at=datetime.datetime.utcnow().isoformat(),
+            verified=verified, telegram=tg,
+            created_at=datetime.datetime.utcnow().isoformat(),
         )
         db.add(user)
         db.commit()
@@ -703,6 +710,7 @@ def admin_users(key: str = ""):
             "users": [
                 {"id": u.id, "username": u.username, "email": u.email,
                  "verified": bool(u.verified), "points": u.points,
+                 "telegram": u.telegram or "",
                  "created_at": u.created_at}
                 for u in rows
             ],

@@ -383,6 +383,7 @@
         <div class="modal-info" id="register-info"></div>
         <input class="modal-input" id="reg-username" type="text" placeholder="Username" />
         <input class="modal-input" id="reg-email" type="email" placeholder="Email" />
+        <input class="modal-input" id="reg-telegram" type="text" placeholder="Telegram @username (optional)" />
         <input class="modal-input" id="reg-password" type="password" placeholder="Password (min 6 chars)" />
         <button class="modal-submit" onclick="doRegister()">Create account →</button>
       </div>
@@ -496,12 +497,13 @@ async function doLogin() {
 async function doRegister() {
   const un = document.getElementById('reg-username').value.trim(),
         em = document.getElementById('reg-email').value.trim(),
+        tg = document.getElementById('reg-telegram').value.trim(),
         pw = document.getElementById('reg-password').value;
   const err = document.getElementById('register-error'); err.classList.remove('show');
   const info = document.getElementById('register-info'); info.classList.remove('show');
   if (!un) { err.textContent = 'Username is required'; err.classList.add('show'); return; }
   try {
-    const r = await wfetch(`${API}/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username: un, email: em, password: pw }) });
+    const r = await wfetch(`${API}/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username: un, email: em, password: pw, telegram: tg }) });
     const d = await r.json();
     if (!r.ok) { err.textContent = d.detail || 'Registration failed'; err.classList.add('show'); return; }
     if (d.verification_required) {
